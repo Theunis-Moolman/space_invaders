@@ -1,5 +1,6 @@
 import math
 import stddraw
+from Music.music import Music
 
 class Enemy:
     def __init__(self, x, y, colour, radius):
@@ -7,6 +8,7 @@ class Enemy:
         self.enemy_y = y
         self.colour = colour
         self.radius = radius
+        self.music = Music()
 
     def is_enemy_hit_by_laser(self, laser_origin, laser_direction):
         #Laser start + direction

@@ -1,15 +1,21 @@
 import stddraw
 from src.states.menu import MenuPage
+from src.states.game import GamePlay
 
 def main() -> None:
-    Menu = MenuPage()
+    width = 500
+    height = 500
+    Menu = MenuPage(width, height)
     state = "MENU"
 
-    stddraw.setCanvasSize(1920, 1080)
+    GamePage = GamePlay(width, height)
 
-    if state == "MENU":
-        Menu.draw()
-        Menu.run()
+    while state != "ESCAPE":
+        if state == "MENU":
+            state = Menu.run()
+        elif state == "PLAY":
+            state = GamePage.run()
+
 
 if __name__ == "__main__":
     main()
