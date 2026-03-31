@@ -9,7 +9,7 @@ class GamePlay:
         self.score: int = 0
         self.alive: bool = True
         self.iteration_num: int = 0
-        self.player = Player(0, -1, 20, 0, 0, 0)
+        self.player = Player(0, -0.85, 20, 0, 0, 0)
         self.enemies = Enemies(2, 5)
         self.width = width
         self.height = height
@@ -37,7 +37,7 @@ class GamePlay:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        self.player.draw_spaceship(0.05,stddraw.WHITE, True)
+        self.player.draw_spaceship(0.05, stddraw.WHITE, False)
 
         stddraw.show(20)
 
