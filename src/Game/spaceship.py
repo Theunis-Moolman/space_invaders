@@ -17,10 +17,10 @@ class Player:
         self.music = Music()
 
     #Move player horizontally
-    def move_circle(self, direction,speed):
+    def move_circle(self, width, direction,speed):
         if self.x - self.radius < 0: #Prevents going off left edge
             self.x = self.radius
-        if self.x + self.radius > 100: #Prevents going off right edge
+        if self.x + self.radius > width: #Prevents going off right edge
             self.x = 100 - self.radius
         self.x += direction * speed
 

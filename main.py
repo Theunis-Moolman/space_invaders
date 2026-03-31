@@ -1,4 +1,3 @@
-import stddraw
 from src.states.menu import MenuPage
 from src.states.game import GamePlay
 
