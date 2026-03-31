@@ -2,12 +2,13 @@ import math
 import stddraw
 
 class Enemy:
-    def __init__(self, x, y, colour):
+    def __init__(self, x, y, colour, radius):
         self.enemy_x = x
         self.enemy_y = y
         self.colour = colour
+        self.radius = radius
 
-    def is_enemy_hit_by_laser(self, laser_origin, laser_direction, enemy_radius):
+    def is_enemy_hit_by_laser(self, laser_origin, laser_direction):
         #Laser start + direction
         lx, ly = laser_origin
         dx, dy = laser_direction
@@ -18,7 +19,7 @@ class Enemy:
         numerator = abs((self.enemy_y - ly) * dx - (self.enemy_y - lx) * dy)
         denominator = math.hypot(dx, dy)
         distance = numerator / denominator
-        return distance <= enemy_radius #Hit if close enough
+        return distance <= self.radius #Hit if close enough
 
 
 class Enemies:
@@ -45,13 +46,13 @@ class Enemies:
 
                 self.enemies.append(new_enemy)
 
-    def enemy_update(self, enemy_dir, enemy_speed, enemy_radius):
+    def enemy_update(self, enemy_dir, enemy_speed):
         should_descend = False
 
         for enemy in self.enemies:
             next_x = enemy.enemy_x + enemy_dir * enemy_speed
             #Check wall collision
-            if next_x + enemy_radius > 100 or next_x - enemy_radius < 0:
+            if next_x + enemy.radius > 100 or next_x - enemy.radius < 0:
                 should_descend = True
                 break
 
