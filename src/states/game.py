@@ -16,7 +16,7 @@ class GamePlay:
 
         self.stars = []
 
-        for i in range(250):
+        for i in range(600):
             rand_x = random.random()
             rand_y = random.random()
             radius = random.random() * min(self.width, self.height) / 500000
@@ -37,7 +37,7 @@ class GamePlay:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        self.player.draw_spaceship(0.05,False, False)
+        self.player.draw_spaceship(0.05,stddraw.WHITE, True)
 
         stddraw.show(20)
 
