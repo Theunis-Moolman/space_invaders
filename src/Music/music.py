@@ -3,15 +3,13 @@ import math
 import threading
 
 class Music:
-    def __init__(self, title, pitch, rate):
-        self.title = title
-        self.pitch = pitch
-        self.rate = rate
+    def __init__(self):
+        pass
 
-    def play(title):
+    def play(self, title):
         stdaudio.playFile(f"{title}")
 
-    def sound(pitch, rate):
+    def sound(self, pitch, rate):
         SAMPLE_RATE = rate  # Standard audio sample rate
         duration = 0.2       # 200 milliseconds
         frequency = pitch

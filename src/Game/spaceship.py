@@ -1,6 +1,6 @@
 import stddraw # type: ignore
 import math
-from Music import music
+from Music.music import Music
 
 
 class Player:
@@ -14,6 +14,7 @@ class Player:
         self.dx = 0
         self.dy = 0
         self.pixels = []
+        self.music = Music()
 
     #Move player horizontally
     def move_circle(self, direction,speed):
@@ -108,6 +109,6 @@ class Player:
         dx = speed_projectile * math.cos(radians)
         dy = speed_projectile * math.sin(radians)
 
-        music.sound(1000,44100) #Play shooting sound
+        self.music.sound(1000,44100) #Play shooting sound
 
         return dx, dy #use Player.x and Player.y to get x and y

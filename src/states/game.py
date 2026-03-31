@@ -1,4 +1,5 @@
 import stddraw
+from picture import Picture
 
 class GamePlay():
     def __init__(self):
@@ -6,7 +7,7 @@ class GamePlay():
         self.alive: bool = True
         self.iteration_num: int = 0
 
-    def draw():
+    def draw(self) -> None:
         stddraw.clear()
         stddraw.setXscale(0, 1)
         stddraw.setYscale(0, 1)
