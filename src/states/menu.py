@@ -13,22 +13,22 @@ class MenuPage:
         self.stars = []
 
         for i in range(250):
-            rand_x = random.randint(0, self.width)
-            rand_y = random.randint(0, self.height)
-            radius = random.random() * min(self.width, self.height) / 100
+            rand_x = random.random()
+            rand_y = random.random()
+            radius = random.random() * min(self.width, self.height) / 100000
             #
 
             colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
             self.stars.append((rand_x, rand_y, radius, colour))
 
-        stddraw.setXscale(0, width)
-        stddraw.setYscale(0, height)
+        stddraw.setXscale(0, 1)
+        stddraw.setYscale(0, 1)
         stddraw.setCanvasSize(width, height)
 
     def draw(self):
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(0, 0, self.width, self.height)
+        stddraw.filledRectangle(0, 0, 1, 1)
         stddraw.setPenColor(stddraw.WHITE)
         for x, y, radius, colour in self.stars:
             probability = random.random()
@@ -36,16 +36,16 @@ class MenuPage:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(0, self.height * 0.8, self.width, self.height / 5)
+        stddraw.filledRectangle(0, 0.8, 1, 0.5)
         stddraw.setPenRadius(0.1)
         stddraw.setPenColor(stddraw.WHITE)
-        stddraw.rectangle(self.width * 0.09, self.height * 0.29, self.width * 0.82, self.height * 0.42 )
+        stddraw.rectangle(0.09, 0.29, 0.82, 0.42 )
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(self.width * 0.1, self.height * 0.3, self.width * 0.8, self.height * 0.4)
+        stddraw.filledRectangle(0.1, 0.3, 0.8, 0.4)
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.setFontFamily("Courier New")
         stddraw.setFontSize(min(self.width, self.height) // 10)
-        stddraw.text(self.width/2, self.height * 0.9, "SPACE INVADERS")
+        stddraw.text(0.5, 0.9, "SPACE INVADERS")
 
         instructions = [
             "USE THE LEFT AND RIGHT ARROW KEYS TO MOVE SIDEWAYS",
@@ -55,12 +55,12 @@ class MenuPage:
         ]
 
         stddraw.setFontSize(min(self.width, self.height) // 40)
-        line_height = self.height / 20
-        start_y = self.height * 0.6
+        line_height = 1 / 20
+        start_y = 0.6
 
         for i, line in enumerate(instructions):
             y = start_y - i * line_height
-            stddraw.text(self.width / 2, y, line)
+            stddraw.text(0.5, y, line)
         stddraw.show(20)
     
     def handle_input(self):

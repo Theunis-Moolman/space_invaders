@@ -17,9 +17,9 @@ class GamePlay:
         self.stars = []
 
         for i in range(250):
-            rand_x = random.randint(0, self.width)
-            rand_y = random.randint(0, self.height)
-            radius = random.random() * min(self.width, self.height) / 200
+            rand_x = random.random()
+            rand_y = random.random()
+            radius = random.random() * min(self.width, self.height) / 100000
             #
 
             colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
