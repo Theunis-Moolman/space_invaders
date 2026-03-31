@@ -3,13 +3,14 @@ from Game.enemies import Enemies
 from Game.spaceship import Player
 import random
 from color import Color
+import pygame
 
 class GamePlay:
     def __init__(self, width: int, height: int):
         self.score: int = 0
         self.alive: bool = True
         self.iteration_num: int = 0
-        self.player = Player(0, -0.85, 20, 0, 0, 0)
+        self.player = Player(0, -0.85, 0.2, 0, 0, 90)
         self.enemies = Enemies(2, 5)
         self.width = width
         self.height = height
@@ -37,16 +38,24 @@ class GamePlay:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        self.player.draw_spaceship(0.05, stddraw.WHITE, False)
+        self.player.draw_spaceship(0.1, stddraw.WHITE, False)
+        stddraw.setPenRadius(0.001)
+        stddraw.setPenColor(stddraw.WHITE)
+        for i in range(100):
+            x = i / 100
+            stddraw.filledCircle(x, 0.205, 0.002)
 
         stddraw.show(20)
 
     def run(self):
         self.draw()
-        if stddraw.hasNextKeyTyped():
-            key = stddraw.nextKeyTyped()
-            if key == chr(27):
-                return "ESCAPE"
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            return "ESCAPE"
+        elif keys[pygame.K_RIGHT]:
+            self.player.move_circle(1, 1, 0.01)
+        elif keys[pygame.K_LEFT]:
+            self.player.move_circle(1, -1, 0.01)
 
         return "PLAY"
         

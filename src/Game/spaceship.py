@@ -19,10 +19,10 @@ class Player:
 
     #Move player horizontally
     def move_circle(self, width, direction,speed):
-        if self.x - self.radius < 0: #Prevents going off left edge
-            self.x = self.radius
+        if self.x - self.radius < -1: #Prevents going off left edge
+            self.x = -1 + self.radius
         if self.x + self.radius > width: #Prevents going off right edge
-            self.x = 100 - self.radius
+            self.x = 1 - self.radius
         self.x += direction * speed
 
 
@@ -100,6 +100,7 @@ class Player:
         # Optional: Draw a direction line
         end_x = self.x + line_length * math.cos(radians)
         end_y = self.y + line_length * math.sin(radians)
+        stddraw.setPenRadius(0.05)
         stddraw.setPenColor(stddraw.RED)
         stddraw.line(self.x, self.y, end_x, end_y) #Shows where you are aiming
 
