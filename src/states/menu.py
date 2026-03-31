@@ -51,7 +51,9 @@ class MenuPage:
             "USE THE LEFT AND RIGHT ARROW KEYS TO MOVE SIDEWAYS",
             "USE THE UP ARROW TO SHOOT",
             "",
-            "PRESS SPACE TO PLAY!"
+            "PRESS SPACE TO PLAY!",
+            "",
+            "PRESS ESCAPE TO EXIT"
         ]
 
         stddraw.setFontSize(min(self.width, self.height) // 40)
@@ -62,16 +64,14 @@ class MenuPage:
             y = start_y - i * line_height
             stddraw.text(0.5, y, line)
         stddraw.show(20)
-    
-    def handle_input(self):
-        if stddraw.hasNextKeyTyped():
-            key = stddraw.nextKeyTyped()
-            if key == " ":
-                return True
-        return False
+
 
     def run(self):
         self.draw()
-        if self.handle_input():
-            return "PLAY"
+        if stddraw.hasNextKeyTyped():
+            key = stddraw.nextKeyTyped()
+            if key == " ":
+                return "PLAY"
+            if key == chr(27):
+                return "ESCAPE"
         return "MENU"
