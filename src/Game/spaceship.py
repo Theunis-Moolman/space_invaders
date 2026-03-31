@@ -13,6 +13,7 @@ class Player:
         self.angle = angle
         self.dx = 0
         self.dy = 0
+        self.size = 0.02
         self.pixels = []
         self.music = Music()
 
@@ -44,12 +45,12 @@ class Player:
         return counterclockwise, is_clockwise  #Returns updated values
 
     def pixel(self, px, py, color):
-        size=0.5
         stddraw.setPenColor(color)
-        stddraw.filledSquare(px, py, size)
+        px = (px + 1)/2
+        py = (py + 1)/2
+        stddraw.filledSquare(px, py, self.size)
 
     def draw_spaceship(self, line_length,change_color,is_hit=False):
-        size = 0.5  # Size of each pixel/block
         hit_color = change_color if is_hit else stddraw.WHITE  #If hit, flash color
 
         # Define the spaceship shape using relative coordinates (dx, dy, color)
@@ -94,7 +95,7 @@ class Player:
 
         # Draw each part of the ship after rotation(Relative to ship position)
         for dx, dy, color in self.pixels:
-            self.pixel(self.x + dx * size, self.y + dy * size, color)
+            self.pixel(self.x + dx * self.size, self.y + dy * self.size, color)
 
         # Optional: Draw a direction line
         end_x = self.x + line_length * math.cos(radians)
