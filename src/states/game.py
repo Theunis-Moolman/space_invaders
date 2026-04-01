@@ -15,6 +15,10 @@ class GamePlay:
         self.width = width
         self.height = height
 
+        self.projectile_shot: bool = False
+        self.projectile_dx = 0
+        self.projectile_dy = 0
+
         self.stars = []
 
         for i in range(600):
@@ -45,6 +49,12 @@ class GamePlay:
             x = i / 100
             stddraw.filledCircle(x, 0.205, 0.002)
 
+        if self.projectile_shot:
+            stddraw.setPenColor(stddraw.RED)
+            self.projectile_dx = (self.projectile_dx + 1) / 2
+            self.projectile_dy = (self.projectile_dy + 1) / 2
+            stddraw.line((self.player.x + 1)/2, (self.player.y + 1)/2, self.projectile_dx, self.projectile_dy)
+            self.projectile_shot = False
         stddraw.show(20)
 
     def run(self):
@@ -53,9 +63,16 @@ class GamePlay:
         if keys[pygame.K_ESCAPE]:
             return "ESCAPE"
         elif keys[pygame.K_RIGHT]:
-            self.player.move_circle(1, 1, 0.01)
+            self.player.move_circle(1, 1, 0.02)
         elif keys[pygame.K_LEFT]:
-            self.player.move_circle(1, -1, 0.01)
+            self.player.move_circle(1, -1, 0.02)
+        elif keys[pygame.K_a]:
+            self.player.line_rotate(True, False, 5)
+        elif keys[pygame.K_d]:
+            self.player.line_rotate(False, True, 5)
+        if keys[pygame.K_UP]:
+            self.projectile_dx, self.projectile_dy = self.player.shoot(5)
+            self.projectile_shot = True
 
         return "PLAY"
         

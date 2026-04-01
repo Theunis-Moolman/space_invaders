@@ -100,16 +100,16 @@ class Player:
         # Optional: Draw a direction line
         end_x = self.x + line_length * math.cos(radians)
         end_y = self.y + line_length * math.sin(radians)
-        stddraw.setPenRadius(0.05)
+        stddraw.setPenRadius(0.01)
         stddraw.setPenColor(stddraw.RED)
-        stddraw.line(self.x, self.y, end_x, end_y) #Shows where you are aiming
+        stddraw.line((self.x + 1)/2, (self.y + 1)/ 2 , (end_x + 1)/2, (end_y + 1)/2) #Shows where you are aiming
 
     def shoot(self, speed_projectile):
         radians = math.radians(self.angle) #Convert angles
-
+        print(self.angle)
         #Calculate movement direction
-        dx = speed_projectile * math.cos(radians)
-        dy = speed_projectile * math.sin(radians)
+        dx = self.x + speed_projectile * math.cos(radians)
+        dy = self.y + speed_projectile * math.sin(radians)
 
         self.music.sound(1000,44100) #Play shooting sound
 
