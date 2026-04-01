@@ -2,8 +2,8 @@ from src.states.menu import MenuPage
 from src.states.game import GamePlay
 
 def main() -> None:
-    width = 800
-    height = 800
+    width = 600
+    height = 600
     Menu = MenuPage(width, height)
     state = "MENU"
 
