@@ -11,13 +11,15 @@ class GamePlay:
         self.alive: bool = True
         self.iteration_num: int = 0
         self.player = Player(0, -0.85, 0.2, 0, 0, 90)
-        self.enemies = Enemies(2, 5)
+        self.enemies = Enemies(3, 5)
         self.width = width
         self.height = height
 
         self.projectile_shot: bool = False
         self.projectile_dx = 0
         self.projectile_dy = 0
+
+        self.enemies.create_enemies(3)
 
         self.stars = []
 
@@ -41,20 +43,30 @@ class GamePlay:
             if probability < 0.99:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
+        if not self.enemies.check_death():
+            self.player.draw_spaceship(0.1, stddraw.WHITE, False)
+            stddraw.setPenRadius(0.001)
+            stddraw.setPenColor(stddraw.WHITE)
+            for i in range(100):
+                x = i / 100
+                stddraw.filledCircle(x, 0.205, 0.002)
 
-        self.player.draw_spaceship(0.1, stddraw.WHITE, False)
-        stddraw.setPenRadius(0.001)
-        stddraw.setPenColor(stddraw.WHITE)
-        for i in range(100):
-            x = i / 100
-            stddraw.filledCircle(x, 0.205, 0.002)
+            self.enemies.enemy_update(1, 0.01, 0.001, True)
+            self.enemies.draw_enemies()
 
-        if self.projectile_shot:
-            stddraw.setPenColor(stddraw.RED)
-            self.projectile_dx = (self.projectile_dx + 1) / 2
-            self.projectile_dy = (self.projectile_dy + 1) / 2
-            stddraw.line((self.player.x + 1)/2, (self.player.y + 1)/2, self.projectile_dx, self.projectile_dy)
-            self.projectile_shot = False
+            if self.projectile_shot:
+                stddraw.setPenColor(stddraw.RED)
+                self.projectile_dx = (self.projectile_dx + 1) / 2
+                self.projectile_dy = (self.projectile_dy + 1) / 2
+                stddraw.line((self.player.x + 1)/2, (self.player.y + 1)/2, self.projectile_dx, self.projectile_dy)
+                self.projectile_shot = False
+        else:
+            stddraw.setFontSize(80)
+            stddraw.text(0.5, 0.7, "GAME OVER")
+            stddraw.setFontSize(25)
+            stddraw.text(0.5, 0.5, "PRESS R TO RESTART")
+            stddraw.text(0.5, 0.4, "PRESS ESC TO EXIT")
+            self.alive = False
         stddraw.show(20)
 
     def run(self):
@@ -67,12 +79,14 @@ class GamePlay:
         elif keys[pygame.K_LEFT]:
             self.player.move_circle(1, -1, 0.02)
         elif keys[pygame.K_a]:
-            self.player.line_rotate(True, False, 5)
-        elif keys[pygame.K_d]:
             self.player.line_rotate(False, True, 5)
+        elif keys[pygame.K_d]:
+            self.player.line_rotate(True, False, 5)
         if keys[pygame.K_UP]:
             self.projectile_dx, self.projectile_dy = self.player.shoot(5)
             self.projectile_shot = True
+        if not self.alive and keys[pygame.K_r]:
+            return "RESTART"
 
         return "PLAY"
         

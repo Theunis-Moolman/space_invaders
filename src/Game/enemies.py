@@ -1,6 +1,9 @@
 import math
 import stddraw
+from mypy.typeops import true_only
+
 from Music.music import Music
+from picture import Picture
 
 class Enemy:
     def __init__(self, x, y, colour, radius):
@@ -27,13 +30,14 @@ class Enemy:
 class Enemies:
     def __init__(self, rows, cols):
         self.enemies = []
-        self.enemy_spacing = 15
+        self.enemy_spacing = 0.2
         self.enemy_rows = rows # 2
         self.enemy_cols = cols # 5
+        self.enemy_radius = 0.05
 
     def create_enemies(self, level):
-        enemy_x = 15
-        enemy_y = 90
+        enemy_x = 0.1
+        enemy_y = 0.90
 
         #Create grid
         for row in range(self.enemy_rows):
@@ -44,13 +48,11 @@ class Enemies:
                 #Level-based coloring
                 colour = stddraw.BLUE if level == 1 else stddraw.RED if row == 1 else stddraw.BLUE
 
-                new_enemy = Enemy(x_pos, y_pos, colour)
+                new_enemy = Enemy(x_pos, y_pos, colour, self.enemy_radius)
 
                 self.enemies.append(new_enemy)
 
-    def enemy_update(self, enemy_dir, enemy_speed):
-        should_descend = False
-
+    def enemy_update(self, enemy_dir, enemy_speed, descend_speed, should_descend):
         for enemy in self.enemies:
             next_x = enemy.enemy_x + enemy_dir * enemy_speed
             #Check wall collision
@@ -61,7 +63,7 @@ class Enemies:
         for enemy in self.enemies:
             #Move enemies
             if should_descend:
-                enemy.enemy_y -= 5
+                enemy.enemy_y -= descend_speed
             else:
                 enemy.enemy_x += enemy_dir * enemy_speed
 
@@ -70,3 +72,15 @@ class Enemies:
             enemy_dir *= -1
 
         return enemy_dir
+
+    def check_death(self):
+        for enemy in self.enemies:
+            if enemy.enemy_y - enemy.radius <= 0.205:
+                return True
+        return False
+
+    def draw_enemies(self): #made for 0 to 1 scale
+        enemy_picture = Picture("assets/images/TIE.png")
+        for enemy in self.enemies:
+            stddraw.picture(enemy_picture, enemy.enemy_x, enemy.enemy_y, 0.1, 0.1)
+

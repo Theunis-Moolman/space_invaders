@@ -14,6 +14,9 @@ def main() -> None:
             state = Menu.run()
         elif state == "PLAY":
             state = GamePage.run()
+        elif state == "RESTART":
+            GamePage = GamePlay(width, height)
+            state = "PLAY"
 
 
 if __name__ == "__main__":

@@ -50,7 +50,7 @@ class MenuPage:
         instructions = [
             "USE THE LEFT AND RIGHT ARROW KEYS TO MOVE SIDEWAYS",
             "USE THE UP ARROW TO SHOOT",
-            "",
+            "USE A AND D TO CHANGE SHOOTING ANGLING",
             "PRESS SPACE TO PLAY!",
             "",
             "PRESS ESCAPE TO EXIT"
