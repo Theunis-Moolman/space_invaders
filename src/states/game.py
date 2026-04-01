@@ -4,6 +4,7 @@ from Game.spaceship import Player
 import random
 from color import Color
 import pygame
+import time
 
 class GamePlay:
     def __init__(self, width: int, height: int):
@@ -14,12 +15,15 @@ class GamePlay:
         self.enemies = Enemies(3, 5)
         self.width = width
         self.height = height
+        self.enemy_speed = 0.001
 
         self.projectile_shot: bool = False
         self.projectile_dx = 0
         self.projectile_dy = 0
 
-        self.enemies.create_enemies(3)
+        self.enemies.create_enemies(3, 3, 5)
+        self.enemy_creation_timer = time.time()
+        self.cooldown_timer = time.time()
 
         self.stars = []
 
@@ -38,6 +42,11 @@ class GamePlay:
         stddraw.filledRectangle(0, 0, self.width, self.height)
 
         stddraw.setPenColor(stddraw.WHITE)
+        stddraw.text(0.5, 0.9, f"Score: {self.score}")
+        if (time.time() - self.enemy_creation_timer) > 5:
+            self.enemies.create_enemies(1, 1, 5)
+            self.enemy_creation_timer = time.time()
+
         for x, y, radius, colour in self.stars:
             probability = random.random()
             if probability < 0.99:
@@ -51,17 +60,27 @@ class GamePlay:
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
-            self.enemies.enemy_update(1, 0.01, 0.001, True)
+            self.enemies.enemy_update(1, 0.01, self.enemy_speed, True)
             self.enemies.draw_enemies()
 
-            if self.projectile_shot:
+            if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.2:
                 stddraw.setPenColor(stddraw.RED)
+                self.cooldown_timer = time.time()
+                speed = 5
+                self.projectile_dx, self.projectile_dy = self.player.shoot(speed)
                 self.projectile_dx = (self.projectile_dx + 1) / 2
                 self.projectile_dy = (self.projectile_dy + 1) / 2
-                stddraw.line((self.player.x + 1)/2, (self.player.y + 1)/2, self.projectile_dx, self.projectile_dy)
+                if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
+                    stddraw.setPenColor(stddraw.RED)
+                    self.score += 100
+                    self.enemy_speed += 0.000015
+                else:
+                    stddraw.setPenColor(stddraw.ORANGE)
+                stddraw.line((self.player.x + 1) / 2, (self.player.y + 1) / 2, self.projectile_dx, self.projectile_dy)
                 self.projectile_shot = False
         else:
             stddraw.setFontSize(80)
+            stddraw.setPenColor(stddraw.RED)
             stddraw.text(0.5, 0.7, "GAME OVER")
             stddraw.setFontSize(25)
             stddraw.text(0.5, 0.5, "PRESS R TO RESTART")
@@ -83,7 +102,6 @@ class GamePlay:
         elif keys[pygame.K_d]:
             self.player.line_rotate(True, False, 5)
         if keys[pygame.K_UP]:
-            self.projectile_dx, self.projectile_dy = self.player.shoot(5)
             self.projectile_shot = True
         if not self.alive and keys[pygame.K_r]:
             return "RESTART"

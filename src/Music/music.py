@@ -23,6 +23,6 @@ class Music:
             sample = volume * math.sin(2 * math.pi * freq * t)
             samples.append(sample)
     
-        stdaudio.playSamples(samples)
+        #stdaudio.playSamples(samples)
 
 

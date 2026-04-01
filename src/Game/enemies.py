@@ -14,34 +14,40 @@ class Enemy:
         self.music = Music()
 
     def is_enemy_hit_by_laser(self, laser_origin, laser_direction):
-        #Laser start + direction
+        # Laser start + direction
         lx, ly = laser_origin
         dx, dy = laser_direction
+        px, py = self.enemy_x, self.enemy_y
 
-        #playsound("Explode")
+        # Vector along the laser
+        line_dx = dx - lx
+        line_dy = dy - ly
 
-        #Distance from line formula
-        numerator = abs((self.enemy_y - ly) * dx - (self.enemy_y - lx) * dy)
-        denominator = math.hypot(dx, dy)
-        distance = numerator / denominator
-        return distance <= self.radius #Hit if close enough
+        # Handle degenerate line (laser points are the same)
+        if line_dx == 0 and line_dy == 0:
+            distance = math.sqrt((px - lx) ** 2 + (py - ly) ** 2)
+        else:
+            # Distance from point to line formula
+            numerator = abs(line_dy * px - line_dx * py + line_dx * ly - line_dy * lx)
+            denominator = math.sqrt(line_dx ** 2 + line_dy ** 2)
+            distance = numerator / denominator
+
+        return distance <= self.radius  # Hit if close enough
 
 
 class Enemies:
     def __init__(self, rows, cols):
         self.enemies = []
         self.enemy_spacing = 0.2
-        self.enemy_rows = rows # 2
-        self.enemy_cols = cols # 5
         self.enemy_radius = 0.05
 
-    def create_enemies(self, level):
+    def create_enemies(self, level, rows, cols):
         enemy_x = 0.1
         enemy_y = 0.90
 
         #Create grid
-        for row in range(self.enemy_rows):
-            for col in range(self.enemy_cols):
+        for row in range(rows):
+            for col in range(cols):
                 x_pos = enemy_x + col * self.enemy_spacing
                 y_pos = enemy_y - row * self.enemy_spacing
 
@@ -82,5 +88,12 @@ class Enemies:
     def draw_enemies(self): #made for 0 to 1 scale
         enemy_picture = Picture("assets/images/TIE.png")
         for enemy in self.enemies:
-            stddraw.picture(enemy_picture, enemy.enemy_x, enemy.enemy_y, 0.1, 0.1)
+            stddraw.picture(enemy_picture, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
+
+    def check_hit(self, laser_origin, laser_direction):
+        for enemy in self.enemies:
+            if enemy.is_enemy_hit_by_laser(laser_origin, laser_direction):
+                self.enemies.remove(enemy)
+                return True
+        return False
 

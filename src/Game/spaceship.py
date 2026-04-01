@@ -106,7 +106,6 @@ class Player:
 
     def shoot(self, speed_projectile):
         radians = math.radians(self.angle) #Convert angles
-        print(self.angle)
         #Calculate movement direction
         dx = self.x + speed_projectile * math.cos(radians)
         dy = self.y + speed_projectile * math.sin(radians)
