@@ -43,8 +43,9 @@ class GamePlay:
 
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.text(0.5, 0.9, f"Score: {self.score}")
-        if (time.time() - self.enemy_creation_timer) > 5:
-            self.enemies.create_enemies(1, 1, 5)
+        spawn_interval = 3 * (0.25 ** (self.score / 25000))
+        if (time.time() - self.enemy_creation_timer) > spawn_interval:
+            self.enemies.create_enemies(1, 1, random.randint(1, 5))
             self.enemy_creation_timer = time.time()
 
         for x, y, radius, colour in self.stars:

@@ -1,6 +1,6 @@
 import math
 import stddraw
-
+import random
 from Music.music import Music
 from picture import Picture
 
@@ -37,18 +37,22 @@ class Enemy:
 class Enemies:
     def __init__(self):
         self.enemies = []
-        self.enemy_spacing = 0.2
         self.enemy_radius = 0.05
 
     def create_enemies(self, level, rows, cols):
         enemy_x = 0.1
         enemy_y = 0.90
 
+        enemy_spacing = 1 / cols
+
         #Create grid
         for row in range(rows):
             for col in range(cols):
-                x_pos = enemy_x + col * self.enemy_spacing
-                y_pos = enemy_y - row * self.enemy_spacing
+                if cols == 1:
+                    x_pos = random.random() * 0.8 + 0.1
+                else:
+                    x_pos = enemy_x + col * enemy_spacing
+                y_pos = enemy_y - row * enemy_spacing
 
                 #Level-based coloring
                 colour = stddraw.BLUE if level == 1 else stddraw.RED if row == 1 else stddraw.BLUE
