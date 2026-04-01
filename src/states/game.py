@@ -12,7 +12,7 @@ class GamePlay:
         self.alive: bool = True
         self.iteration_num: int = 0
         self.player = Player(0, -0.85, 0.2, 0, 0, 90)
-        self.enemies = Enemies(3, 5)
+        self.enemies = Enemies()
         self.width = width
         self.height = height
         self.enemy_speed = 0.001

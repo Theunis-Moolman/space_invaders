@@ -1,6 +1,5 @@
 import math
 import stddraw
-from mypy.typeops import true_only
 
 from Music.music import Music
 from picture import Picture
@@ -36,7 +35,7 @@ class Enemy:
 
 
 class Enemies:
-    def __init__(self, rows, cols):
+    def __init__(self):
         self.enemies = []
         self.enemy_spacing = 0.2
         self.enemy_radius = 0.05
