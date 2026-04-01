@@ -8,6 +8,7 @@ Features to be added:
 - (Really difficult, but if needed: Enemy explosion effect)
 - Sad music for game over
 - Explosion effect for game over
+- Lives can be added
 
 Features completed:
 - Restart
