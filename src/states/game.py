@@ -102,7 +102,7 @@ class Level1:
 
         return "PLAY"
         
-
+#Template for level 2
 class Level2:
     def __init__(self, width: int, height: int):
         self.score: int = 20000
@@ -175,6 +175,7 @@ class Level2:
 
         return "PLAY"
 
+#Template for level 3
 class Level3:
     def __init__(self, width: int, height: int):
         self.score: int = 40000
