@@ -138,7 +138,7 @@ class Level2:
     def draw(self) -> None:
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(0, 0, self.width, self.height)
+        stddraw.filledRectangle(0, 0, 1, 1)
 
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.text(0.5, 0.9, f"Score: {self.score}")
@@ -210,7 +210,7 @@ class Level3:
     def draw(self) -> None:
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(0, 0, self.width, self.height)
+        stddraw.filledRectangle(0, 0, 1, 1)
 
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.text(0.5, 0.9, f"Score: {self.score}")
