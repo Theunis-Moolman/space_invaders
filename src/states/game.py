@@ -3,7 +3,6 @@ from Game.enemies import Enemies
 from Game.spaceship import Player
 import random
 from color import Color
-import pygame
 import time
 
 class GamePlay:
@@ -93,20 +92,20 @@ class GamePlay:
 
     def run(self):
         self.draw()
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
+        keys = stddraw.getKeysPressed()
+        if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
-        elif keys[pygame.K_RIGHT]:
+        elif keys[stddraw.K_RIGHT]:
             self.player.move_circle(1, 1, 0.02)
-        elif keys[pygame.K_LEFT]:
+        elif keys[stddraw.K_LEFT]:
             self.player.move_circle(1, -1, 0.02)
-        elif keys[pygame.K_a]:
+        elif keys[stddraw.K_a]:
             self.player.line_rotate(False, True, 5)
-        elif keys[pygame.K_d]:
+        elif keys[stddraw.K_d]:
             self.player.line_rotate(True, False, 5)
-        if keys[pygame.K_UP]:
+        if keys[stddraw.K_UP]:
             self.projectile_shot = True
-        if not self.alive and keys[pygame.K_r]:
+        if not self.alive and keys[stddraw.K_r]:
             return "RESTART"
 
         return "PLAY"
