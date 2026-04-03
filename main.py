@@ -13,9 +13,9 @@ def main() -> None:
         if state == "MENU":
             state = Menu.run()
         elif state == "PLAY":
-            if GamePage.score == 20000 and not isinstance(GamePage, Level2):
+            if GamePage.score >= 20000 and not isinstance(GamePage, Level2):
                 GamePage = Level2(width, height)
-            if GamePage.score == 40000 and not isinstance(GamePage, Level3):
+            if GamePage.score >= 40000 and not isinstance(GamePage, Level3):
                 GamePage = Level3(width, height)
             state = GamePage.run()
 
