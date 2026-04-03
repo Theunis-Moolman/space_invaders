@@ -4,6 +4,7 @@ from Game.spaceship import Player
 import random
 from color import Color
 from src.Game.controls import controls
+from src.states.end import EndPage
 import time
 
 class Level1:
@@ -25,6 +26,8 @@ class Level1:
         self.enemy_creation_timer = time.time()
         self.cooldown_timer = time.time()
 
+        self.end_page = None
+
         self.stars = []
 
         for i in range(600):
@@ -39,7 +42,7 @@ class Level1:
     def draw(self) -> None:
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
-        stddraw.filledRectangle(0, 0, self.width, self.height)
+        stddraw.filledRectangle(0, 0, 1, 1)
 
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.text(0.5, 0.9, f"Score: {self.score}")
@@ -82,12 +85,9 @@ class Level1:
                 stddraw.line((self.player.x + 1) / 2, (self.player.y + 1) / 2, self.projectile_dx, self.projectile_dy)
                 self.projectile_shot = False
         else:
-            stddraw.setFontSize(80)
-            stddraw.setPenColor(stddraw.RED)
-            stddraw.text(0.5, 0.7, "GAME OVER")
-            stddraw.setFontSize(25)
-            stddraw.text(0.5, 0.5, "PRESS R TO RESTART")
-            stddraw.text(0.5, 0.4, "PRESS ESC TO EXIT")
+            if self.end_page is None:
+                self.end_page = EndPage(self.width, self.height, self.score)
+            self.end_page.draw()
             self.alive = False
         stddraw.show(20)
 
@@ -113,6 +113,8 @@ class Level2:
         self.width = width
         self.height = height
         self.enemy_speed = 0.001
+
+        self.end_page = None
 
         self.projectile_shot: bool = False
         self.projectile_dx = 0
@@ -156,13 +158,9 @@ class Level2:
                 stddraw.filledCircle(x, 0.205, 0.002)
 
         else:
-
-            stddraw.setFontSize(80)
-            stddraw.setPenColor(stddraw.RED)
-            stddraw.text(0.5, 0.7, "GAME OVER")
-            stddraw.setFontSize(25)
-            stddraw.text(0.5, 0.5, "PRESS R TO RESTART")
-            stddraw.text(0.5, 0.4, "PRESS ESC TO EXIT")
+            if self.end_page is None:
+                self.end_page = EndPage(self.width, self.height, self.score)
+            self.end_page.draw()
             self.alive = False
         stddraw.show(20)
 
@@ -196,6 +194,8 @@ class Level3:
         #self.enemy_creation_timer = time.time()
         #self.cooldown_timer = time.time()
 
+        self.end_page = None
+
         self.stars = []
 
         for i in range(600):
@@ -230,13 +230,9 @@ class Level3:
                 stddraw.filledCircle(x, 0.205, 0.002)
 
         else:
-
-            stddraw.setFontSize(80)
-            stddraw.setPenColor(stddraw.RED)
-            stddraw.text(0.5, 0.7, "GAME OVER")
-            stddraw.setFontSize(25)
-            stddraw.text(0.5, 0.5, "PRESS R TO RESTART")
-            stddraw.text(0.5, 0.4, "PRESS ESC TO EXIT")
+            if self.end_page is None:
+                self.end_page = EndPage(self.width, self.height, self.score)
+            self.end_page.draw()
             self.alive = False
         stddraw.show(20)
 
