@@ -104,7 +104,7 @@ class Level1:
         
 #Template for level 2
 class Level2:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, stars: list):
         self.score: int = 20000
         self.alive: bool = True
         self.iteration_num: int = 0
@@ -124,16 +124,7 @@ class Level2:
         #self.enemy_creation_timer = time.time()
         #self.cooldown_timer = time.time()
 
-        self.stars = []
-
-        for i in range(600):
-            rand_x = random.random()
-            rand_y = random.random()
-            radius = random.random() * min(self.width, self.height) / 500000
-            #
-
-            colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
-            self.stars.append((rand_x, rand_y, radius, colour))
+        self.stars = stars
 
     def draw(self) -> None:
         stddraw.clear()
@@ -177,7 +168,7 @@ class Level2:
 
 #Template for level 3
 class Level3:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, stars: list):
         self.score: int = 40000
         self.alive: bool = True
         self.iteration_num: int = 0
@@ -197,16 +188,7 @@ class Level3:
 
         self.end_page = None
 
-        self.stars = []
-
-        for i in range(600):
-            rand_x = random.random()
-            rand_y = random.random()
-            radius = random.random() * min(self.width, self.height) / 500000
-            #
-
-            colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
-            self.stars.append((rand_x, rand_y, radius, colour))
+        self.stars = stars
 
     def draw(self) -> None:
         stddraw.clear()
