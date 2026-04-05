@@ -25,6 +25,7 @@ TO DO: (Recommended by Sydwell)
           (USE DIFFERENT CLASSES FOR EACH LEVEL IN GAME.PY)
 
 Features completed:
+- Level 2 is partially completed (STILL NEED TO ADD BLOCKING)
 - Transition screen
 - Level 1 is completed
 - Restart
