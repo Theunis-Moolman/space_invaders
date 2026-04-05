@@ -13,7 +13,7 @@ Features to be added:
 TO DO: (Recommended by Sydwell)
 - Levels to the game
 
-          Level 1: up to 20000 points with basic enemies (no shooting back)
+          Level 1: up to 15000 points with basic enemies (no shooting back)
 
           Level 2: Enemies + barriers (slower, but shooting back) - USE B FOR BLOCKING
           - up to 40000 points
@@ -25,6 +25,7 @@ TO DO: (Recommended by Sydwell)
           (USE DIFFERENT CLASSES FOR EACH LEVEL IN GAME.PY)
 
 Features completed:
+- Transition screen
 - Level 1 is completed
 - Restart
 - Score
