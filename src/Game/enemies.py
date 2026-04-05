@@ -5,10 +5,10 @@ from Music.music import Music
 from picture import Picture
 
 class Enemy:
-    def __init__(self, x, y, colour, radius):
+    def __init__(self, x, y, level, radius):
         self.enemy_x = x
         self.enemy_y = y
-        self.colour = colour
+        self.level = level
         self.radius = radius
         self.music = Music()
 
@@ -38,6 +38,8 @@ class Enemies:
     def __init__(self):
         self.enemies = []
         self.enemy_radius = 0.05
+        self.enemy_picture_1 = Picture("assets/images/TIE_1.png")
+        self.enemy_picture_2 = Picture("assets/images/TIE_2.svg")
 
     def create_enemies(self, level, rows, cols):
         enemy_x = 0.1
@@ -54,10 +56,7 @@ class Enemies:
                     x_pos = enemy_x + col * enemy_spacing
                 y_pos = enemy_y - row * enemy_spacing
 
-                #Level-based coloring
-                colour = stddraw.BLUE if level == 1 else stddraw.RED if row == 1 else stddraw.BLUE
-
-                new_enemy = Enemy(x_pos, y_pos, colour, self.enemy_radius)
+                new_enemy = Enemy(x_pos, y_pos, level, self.enemy_radius)
 
                 self.enemies.append(new_enemy)
 
@@ -88,10 +87,20 @@ class Enemies:
                 return True
         return False
 
+    def shoot(self):
+        if len(self.enemies) > 0:
+            random_enemy = random.choice(self.enemies)
+            stddraw.setPenColor(stddraw.RED)
+            stddraw.line(random_enemy.enemy_x, random_enemy.enemy_y, random_enemy.enemy_x, 0)
+            return random_enemy.enemy_x
+        return -1
+
     def draw_enemies(self): #made for 0 to 1 scale
-        enemy_picture = Picture("assets/images/TIE.png")
         for enemy in self.enemies:
-            stddraw.picture(enemy_picture, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
+            if enemy.level == 1:
+                stddraw.picture(self.enemy_picture_1, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
+            elif enemy.level == 2:
+                stddraw.picture(self.enemy_picture_2, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
 
     def check_hit(self, laser_origin, laser_direction):
         for enemy in self.enemies:

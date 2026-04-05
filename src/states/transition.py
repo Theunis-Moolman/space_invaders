@@ -18,8 +18,6 @@ class TransitionPage:
             t = i / 120
             y_scroll = 1 - 1.5 * t * t * (2 - 2 * t)
 
-            print(y_scroll)
-
             for x, y, radius, colour in self.stars:
                 probability = random.random()
                 if probability < 0.99:

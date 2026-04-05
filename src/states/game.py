@@ -22,7 +22,7 @@ class Level1:
         self.projectile_dx = 0
         self.projectile_dy = 0
 
-        self.enemies.create_enemies(3, 3, 5)
+        self.enemies.create_enemies(1, 3, 5)
         self.enemy_creation_timer = time.time()
         self.cooldown_timer = time.time()
 
@@ -77,7 +77,7 @@ class Level1:
                 if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
                     stddraw.setPenColor(stddraw.WHITE)
                     stddraw.setPenRadius(0.006)
-                    self.score += 100
+                    self.score += 1000
                     self.enemy_speed += 0.000015
                 else:
                     stddraw.setPenRadius(0.001)
@@ -108,11 +108,13 @@ class Level2:
         self.score: int = 15000
         self.alive: bool = True
         self.iteration_num: int = 0
-        self.player = Player(0, -0.85, 0.2, 0, 0, 90)
+        self.player = Player(0, -0.85, 0.08, 0, 0, 90)
         self.enemies = Enemies()
         self.width = width
         self.height = height
-        self.enemy_speed = 0.001
+        self.enemy_speed = 0.0005
+        self.block = False
+        self.lives = 5
 
         self.end_page = None
 
@@ -120,9 +122,10 @@ class Level2:
         self.projectile_dx = 0
         self.projectile_dy = 0
 
-        #self.enemies.create_enemies(3, 3, 5)
-        #self.enemy_creation_timer = time.time()
-        #self.cooldown_timer = time.time()
+        self.enemies.create_enemies(2, 2, 3)
+        self.enemy_creation_timer = time.time()
+        self.cooldown_timer = time.time()
+        self.block_cooldown = time.time()
 
         self.stars = stars
 
@@ -132,7 +135,14 @@ class Level2:
         stddraw.filledRectangle(0, 0, 1, 1)
 
         stddraw.setPenColor(stddraw.WHITE)
-        stddraw.text(0.5, 0.9, f"Score: {self.score}")
+        stddraw.text(0.3, 0.9, f"Score: {self.score}")
+        stddraw.text(0.6, 0.9, f"Lives: {self.lives}")
+
+        spawn_interval = 5 * 0.25 ** (self.score / 50000)
+
+        if (time.time() - self.enemy_creation_timer) > spawn_interval:
+            self.enemies.create_enemies(2, 1, random.randint(1, 3))
+            self.enemy_creation_timer = time.time()
 
         for x, y, radius, colour in self.stars:
             probability = random.random()
@@ -140,13 +150,39 @@ class Level2:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        if not self.enemies.check_death():
+        if not self.enemies.check_death() and self.lives > 0:
             self.player.draw_spaceship(0.1, stddraw.WHITE, False)
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
             for i in range(100):
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
+
+            self.enemies.enemy_update(1, 0.01, self.enemy_speed, True)
+            self.enemies.draw_enemies()
+            if random.randint(0,60) < self.score // 10000:
+                laser_x = self.enemies.shoot()
+
+                if (self.player.x + 1)/2 - self.player.radius <= laser_x <= (self.player.x + 1)/2 + self.player.radius:
+                    self.lives -= 1
+
+            if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.2:
+                stddraw.setPenColor(stddraw.RED)
+                self.cooldown_timer = time.time()
+                speed = 5
+                self.projectile_dx, self.projectile_dy = self.player.shoot(speed)
+                self.projectile_dx = (self.projectile_dx + 1) / 2
+                self.projectile_dy = (self.projectile_dy + 1) / 2
+                if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
+                    stddraw.setPenColor(stddraw.WHITE)
+                    stddraw.setPenRadius(0.006)
+                    self.score += 100
+                    self.enemy_speed += 0.000015
+                else:
+                    stddraw.setPenRadius(0.001)
+                    stddraw.setPenColor(stddraw.ORANGE)
+                stddraw.line((self.player.x + 1) / 2, (self.player.y + 1) / 2, self.projectile_dx, self.projectile_dy)
+                self.projectile_shot = False
 
         else:
             if self.end_page is None:
@@ -159,6 +195,7 @@ class Level2:
         self.draw()
         keys = stddraw.getKeysPressed()
         self.projectile_shot = controls(self.player, keys)
+        self.block = keys[stddraw.K_b]
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
         if not self.alive and keys[stddraw.K_r]:

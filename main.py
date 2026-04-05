@@ -10,7 +10,7 @@ def main() -> None:
     transitioned: bool = False
 
     level1_paragraph = "Enemies do not shoot back for now..."
-    level2_paragraph = "Good luck! Enemies shoot back now! \n USE B FOR BLOCKING\n You have 5 lives!"
+    level2_paragraph = "Good luck! Enemies shoot back now! \n USE B FOR BLOCKING\n You have 5 lives!\n Enemies reaching line = INSTANT DEATH"
     level3_paragraph = "Final boss reached! \n Hope you saved up lives..."
 
     while state != "ESCAPE":
