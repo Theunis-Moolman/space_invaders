@@ -23,7 +23,7 @@ def main() -> None:
                 transitioned = True
                 GamePage = Level1(width, height)
             else:
-                if GamePage.score >= 20000 and not isinstance(GamePage, Level2):
+                if GamePage.score >= 15000 and not isinstance(GamePage, Level2):
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level2(width, height, GamePage.stars)

@@ -105,7 +105,7 @@ class Level1:
 #Template for level 2
 class Level2:
     def __init__(self, width: int, height: int, stars: list):
-        self.score: int = 20000
+        self.score: int = 15000
         self.alive: bool = True
         self.iteration_num: int = 0
         self.player = Player(0, -0.85, 0.2, 0, 0, 90)
