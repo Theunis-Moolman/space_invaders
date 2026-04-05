@@ -27,6 +27,7 @@ class TransitionPage:
                     stddraw.filledCircle(x, y, radius)
 
             stddraw.setFontSize(100)
+            stddraw.setPenColor(stddraw.WHITE)
             stddraw.text(0.5, y_scroll, self.heading)
             stddraw.setFontSize(20)
             for j, line in enumerate(self.paragraph):
