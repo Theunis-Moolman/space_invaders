@@ -77,7 +77,7 @@ class Level1:
                 if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
                     stddraw.setPenColor(stddraw.WHITE)
                     stddraw.setPenRadius(0.006)
-                    self.score += 1000
+                    self.score += 100
                     self.enemy_speed += 0.000015
                 else:
                     stddraw.setPenRadius(0.001)
