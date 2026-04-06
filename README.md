@@ -1,14 +1,10 @@
 Features to be added:
 
-- Enemies shooting back
-- Different enemy images as levels increase
-- Fix music
 - Background music in menu
 - High score stored in a text file
 - (Really difficult, but if needed: Enemy explosion effect)
 - Sad music for game over
 - Explosion effect for game over
-- Lives can be added
 
 TO DO: (Recommended by Sydwell)
 - Levels to the game
@@ -25,6 +21,10 @@ TO DO: (Recommended by Sydwell)
           (USE DIFFERENT CLASSES FOR EACH LEVEL IN GAME.PY)
 
 Features completed:
+- Lives are added level 2
+- Music fixed
+- Different enemy images as levels increase
+- Enemies shooting back
 - Level 2 is partially completed (STILL NEED TO ADD BLOCKING)
 - Transition screen
 - Level 1 is completed
