@@ -2,12 +2,18 @@ import stdaudio
 import math
 import threading
 
+
 class Music:
     def __init__(self):
-        pass
+        self.sounds = {}
+
+    def load(self, titles):
+        for title in titles:
+            self.sounds[title] = stdaudio.read(title)
 
     def play(self, title):
-        stdaudio.playFile(f"{title}")
+        thread = threading.Thread(target=stdaudio.playSamples, args=(self.sounds[title],), daemon=True)
+        thread.start()
 
     def sound(self, pitch, rate):
         SAMPLE_RATE = rate  # Standard audio sample rate

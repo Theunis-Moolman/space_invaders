@@ -6,6 +6,7 @@ from color import Color
 from src.Game.controls import controls
 from src.states.end import EndPage
 import time
+from Music.music import Music
 
 class Level1:
     def __init__(self, width: int, height: int):
@@ -77,7 +78,7 @@ class Level1:
                 if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
                     stddraw.setPenColor(stddraw.WHITE)
                     stddraw.setPenRadius(0.006)
-                    self.score += 100
+                    self.score += 1000
                     self.enemy_speed += 0.000015
                 else:
                     stddraw.setPenRadius(0.001)
@@ -115,6 +116,10 @@ class Level2:
         self.enemy_speed = 0.0005
         self.block = False
         self.lives = 5
+        self.music = Music()
+        self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot"])
+        self.shoot_countdown = -1
+        self.enemies_shooting = []
 
         self.end_page = None
 
@@ -126,6 +131,7 @@ class Level2:
         self.enemy_creation_timer = time.time()
         self.cooldown_timer = time.time()
         self.block_cooldown = time.time()
+        self.hit = False
 
         self.stars = stars
 
@@ -141,7 +147,7 @@ class Level2:
         spawn_interval = 5 * 0.25 ** (self.score / 50000)
 
         if (time.time() - self.enemy_creation_timer) > spawn_interval:
-            self.enemies.create_enemies(2, 1, random.randint(1, 3))
+            self.enemies.create_enemies(2, 1, random.randint(1, 5))
             self.enemy_creation_timer = time.time()
 
         for x, y, radius, colour in self.stars:
@@ -160,11 +166,35 @@ class Level2:
 
             self.enemies.enemy_update(1, 0.01, self.enemy_speed, True)
             self.enemies.draw_enemies()
-            if random.randint(0,60) < self.score // 10000:
-                laser_x = self.enemies.shoot()
+            if random.randint(0,60) < self.score // 10000 and self.shoot_countdown < 0 and len(self.enemies.enemies) > 0:
+                self.shoot_countdown = 60
+                self.hit = False
+                for i in range(random.randint(1,5)):
+                    random_enemy = self.enemies.shoot()
+                    if random_enemy is not None and random_enemy not in self.enemies_shooting:
+                        self.enemies_shooting.append(self.enemies.shoot())
+                #self.music.play("assets/Music/enemy_charge")
 
-                if (self.player.x + 1)/2 - self.player.radius <= laser_x <= (self.player.x + 1)/2 + self.player.radius:
-                    self.lives -= 1
+            self.shoot_countdown -= 1
+            if self.shoot_countdown == 20:
+                self.music.play("assets/Music/enemy_shoot")
+            for enemy in self.enemies_shooting:
+                if enemy in self.enemies.enemies:
+                    if 20 < self.shoot_countdown < 60:
+                        for i in range(100):
+                            stddraw.filledCircle(enemy.enemy_x, enemy.enemy_y - i/100, 0.002)
+
+                    if 0 < self.shoot_countdown <= 20:
+                        stddraw.setPenColor(stddraw.RED)
+                        stddraw.setPenRadius(0.003)
+                        stddraw.line(enemy.enemy_x, enemy.enemy_y, enemy.enemy_x, 0)
+                        if (self.player.x + 1)/2 - self.player.radius <= enemy.enemy_x <= (self.player.x + 1)/2 + self.player.radius:
+                            stddraw.setPenColor(stddraw.RED)
+                            stddraw.setPenRadius(0.003)
+                            stddraw.line(enemy.enemy_x, enemy.enemy_y, enemy.enemy_x, 0)
+                            if not self.hit:
+                                self.lives -= 1
+                            self.hit = True
 
             if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.2:
                 stddraw.setPenColor(stddraw.RED)
@@ -174,6 +204,7 @@ class Level2:
                 self.projectile_dx = (self.projectile_dx + 1) / 2
                 self.projectile_dy = (self.projectile_dy + 1) / 2
                 if self.enemies.check_hit( ((self.player.x + 1)/2, (self.player.y + 1)/2), (self.projectile_dx, self.projectile_dy)):
+                    #self.music.play("assets/Music/shoot")
                     stddraw.setPenColor(stddraw.WHITE)
                     stddraw.setPenRadius(0.006)
                     self.score += 100

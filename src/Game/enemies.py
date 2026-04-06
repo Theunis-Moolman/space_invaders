@@ -90,10 +90,8 @@ class Enemies:
     def shoot(self):
         if len(self.enemies) > 0:
             random_enemy = random.choice(self.enemies)
-            stddraw.setPenColor(stddraw.RED)
-            stddraw.line(random_enemy.enemy_x, random_enemy.enemy_y, random_enemy.enemy_x, 0)
-            return random_enemy.enemy_x
-        return -1
+            return random_enemy
+        return None
 
     def draw_enemies(self): #made for 0 to 1 scale
         for enemy in self.enemies:
