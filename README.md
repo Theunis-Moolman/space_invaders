@@ -1,7 +1,6 @@
 # Project Roadmap & Progress
 
-### Project Progress: 39%
-![Progress Bar](https://web.app)
+### Project Progress: 60%
 
 ### Features to be added:
 - [ ] Background music in menu
