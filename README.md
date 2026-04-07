@@ -12,14 +12,23 @@
 
 > [!CAUTION]
 > **TO FIX: (IMPORTANT TO DO FIRST BEFORE CONTINUING WITH FEATURES)**
+> 
 > - [ ] Enemy movements should first be left to right before the enemies descend
+> 
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- [ ] Add checks to see if the last enemy in a row is at the edge and then descend
+> 
 > - [ ] Turret should not shoot a laser. Should shoot a moving ball 
+> 
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- [ ] (Make a class for this maybe and then store array of objects in the spaceship class)
+> 
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- [ ] Make a function in gamestate class that iterates through objects comparing co-ordinates with x and y
+> 
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- [ ] is_enemy_hit has to be updated to use direct center-ordinates + radius of the moving ball to detect a hit
+> 
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- [ ] Make a function in spaceship class to draw all the bullets (Please use 0 to 1 scale)
+> 
 > - [ ] Game over should have an automatic restart too after a certain time
+> 
 > - [ ] (OPTIONAL SORT OF: CONVERT DRAW_SPACESHIP to 0 to 1 scale for better efficiency)
 
 ### TO DO: (Recommended by Sydwell)
