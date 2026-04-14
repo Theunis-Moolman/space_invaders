@@ -7,6 +7,16 @@ def main() -> None:
     height = 600
     Menu = MenuPage(width, height)
     state = "MENU"
+    # Sydwell did highscore text file
+    with open('src/stored/Highscore.txt', 'r') as f:
+        line = f.read().strip()
+    print(line)
+    if line == "":
+        highscore = 99999
+    else:
+        highscore = float(line)
+    written:bool = False
+
     transitioned: bool = False
 
     level1_paragraph = "Enemies do not shoot back for now..."
@@ -18,20 +28,27 @@ def main() -> None:
             state = Menu.run()
         elif state == "PLAY":
             if not transitioned:
+                written = False
                 Transition = TransitionPage("Level 1", level1_paragraph, Menu.stars)
                 Transition.draw()
                 transitioned = True
                 GamePage = Level1(width, height)
             else:
-                if 15000 <= GamePage.score < 40000 and not isinstance(GamePage, Level2):
+                if 2500 <= GamePage.score < 5000 and not isinstance(GamePage, Level2):
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level2(width, height, GamePage.stars)
-                if GamePage.score >= 40000 and not isinstance(GamePage, Level3):
+                if GamePage.score >= 5000 and not isinstance(GamePage, Level3):
                     Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level3(width, height, GamePage.stars)
                 state = GamePage.run()
+                if GamePage.dead and not written and GamePage.score > highscore:
+                    highscore = GamePage.score
+                    with open('src/Stored/Highscore.txt', 'w') as f:
+                        f.write(str(highscore))
+                    written = True
+
 
         elif state == "RESTART":
             transitioned = False

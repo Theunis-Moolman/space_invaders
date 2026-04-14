@@ -7,7 +7,7 @@ import sys
 from picture import Picture
 import threading
 import stdaudio
-from music import Music
+from Music.music import Music
  
 def move_circle(x,radius,direction,speed):
     if x - radius < 0:
@@ -176,7 +176,7 @@ def startscreen():
 
 def main():
 
-    with open('Highscore.txt', 'r') as f:
+    with open('../Stored/Highscore.txt', 'r') as f:
         line = f.read().strip()
 
     if line == "":
@@ -474,7 +474,7 @@ def main():
                     if score < highscore:
                         highscore = score
 
-                        with open('Highscore.txt', 'w') as f:
+                        with open('../Stored/Highscore.txt', 'w') as f:
                             f.write(str(highscore))
 
                     stddraw.text(50, 20, "Score: " + str(score))

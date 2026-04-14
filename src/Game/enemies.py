@@ -3,6 +3,8 @@ import stddraw
 import random
 from Music.music import Music
 from picture import Picture
+import time
+from src.Game.spaceship import Projectile
 
 class Enemy:
     def __init__(self, x, y, level, radius):
@@ -10,42 +12,30 @@ class Enemy:
         self.enemy_y = y
         self.level = level
         self.radius = radius
-        self.music = Music()
 
-    def is_enemy_hit_by_laser(self, laser_origin, laser_direction):
-        # Laser start + direction
-        lx, ly = laser_origin
-        dx, dy = laser_direction
-        px, py = self.enemy_x, self.enemy_y
+    def is_enemy_hit_by_projectile(self, projectile: Projectile):
+        for i in range(20):
+            px = projectile.x - projectile.dx * (i/20)
+            py = projectile.y - projectile.dy * (i/20)
+            distance = math.sqrt((self.enemy_x - px) ** 2 + (self.enemy_y - py) ** 2)
+            print(self.radius)
+            if distance <= self.radius + 0.01:
+                return True
+        return False
 
-        # Vector along the laser
-        line_dx = dx - lx
-        line_dy = dy - ly
-
-        # Handle degenerate line (laser points are the same)
-        if line_dx == 0 and line_dy == 0:
-            distance = math.sqrt((px - lx) ** 2 + (py - ly) ** 2)
-        else:
-            # Distance from point to line formula
-            numerator = abs(line_dy * px - line_dx * py + line_dx * ly - line_dy * lx)
-            denominator = math.sqrt(line_dx ** 2 + line_dy ** 2)
-            distance = numerator / denominator
-
-        return distance <= self.radius  # Hit if close enough
 
 
 class Enemies:
     def __init__(self):
         self.enemies = []
-        self.enemy_radius = 0.05
-        self.enemy_picture_1 = Picture("assets/images/TIE_1.png")
-        self.enemy_picture_2 = Picture("assets/images/TIE_2.svg")
+        self.enemy_radius = 0.02
+
 
     def create_enemies(self, level, rows, cols):
-        enemy_x = 0.1
+        enemy_x = 0.05
         enemy_y = 0.90
 
-        enemy_spacing = 1 / cols
+        enemy_spacing = 0.15
 
         #Create grid
         for row in range(rows):
@@ -64,7 +54,7 @@ class Enemies:
         for enemy in self.enemies:
             next_x = enemy.enemy_x + enemy_dir * enemy_speed
             #Check wall collision
-            if next_x + enemy.radius > 100 or next_x - enemy.radius < 0:
+            if next_x + enemy.radius > 1 or next_x - enemy.radius < 0:
                 should_descend = True
                 break
 
@@ -93,16 +83,41 @@ class Enemies:
             return random_enemy
         return None
 
+    #Sydwell made this
     def draw_enemies(self): #made for 0 to 1 scale
+        i = int(time.time() % 1 < 0.5)
         for enemy in self.enemies:
             if enemy.level == 1:
-                stddraw.picture(self.enemy_picture_1, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
+                stddraw.setPenColor(stddraw.WHITE)
             elif enemy.level == 2:
-                stddraw.picture(self.enemy_picture_2, enemy.enemy_x, enemy.enemy_y, 0.1, 0.07)
+                stddraw.setPenColor(stddraw.RED)
 
-    def check_hit(self, laser_origin, laser_direction):
+            alien_shape = [
+                [0, 1, 0, 1, 0, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 1, 1, 1, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1],
+                [0, 1, 1, 0, 1, 1, 0],
+                [i + 1, i, 0, 0, 0, i, i + 1],
+                [i + 1, i, 0, 0, 0, i, i + 1],
+            ]
+            pixel_size = 2 * self.enemy_radius / 7
+
+            grid_size = len(alien_shape)
+
+            start_x = enemy.enemy_x - (grid_size / 2) * pixel_size
+            start_y = enemy.enemy_y + (grid_size / 2) * pixel_size
+
+            for row in range(grid_size):
+                for col in range(grid_size):
+                    if alien_shape[row][col] == 1:
+                        xcod = start_x + col * pixel_size
+                        ycod = start_y - row * pixel_size
+                        stddraw.filledSquare(xcod, ycod, pixel_size / 2)
+
+    def check_hit(self, projectile: Projectile):
         for enemy in self.enemies:
-            if enemy.is_enemy_hit_by_laser(laser_origin, laser_direction):
+            if enemy.is_enemy_hit_by_projectile(projectile):
                 self.enemies.remove(enemy)
                 return True
         return False

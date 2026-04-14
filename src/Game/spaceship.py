@@ -1,6 +1,19 @@
 import stddraw # type: ignore
 import math
 from Music.music import Music
+from picture import Picture
+
+#Sydwell's idea implemented in class form
+class Projectile:
+    def __init__(self, x, y, dx, dy):
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
+
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
 
 
 class Player:
@@ -16,6 +29,7 @@ class Player:
         self.size = 0.02
         self.pixels = []
         self.music = Music()
+        self.projectiles: list[Projectile] = []
 
     #Move player horizontally
     def move_circle(self, width, direction,speed):
@@ -107,9 +121,19 @@ class Player:
     def shoot(self, speed_projectile):
         radians = math.radians(self.angle) #Convert angles
         #Calculate movement direction
-        dx = self.x + speed_projectile * math.cos(radians)
-        dy = self.y + speed_projectile * math.sin(radians)
+        dx = speed_projectile * math.cos(radians)
+        dy = speed_projectile * math.sin(radians)
 
         self.music.sound(1000,44100) #Play shooting sound
-
+        projectile = Projectile((self.x + 1)/2, (self.y + 1)/2, dx, dy)
+        self.projectiles.append(projectile)
         return dx, dy #use Player.x and Player.y to get x and y
+
+    def draw_projectiles(self) -> None:
+        for projectile in self.projectiles:
+
+            stddraw.picture(Picture("assets/images/Projectile.png"), projectile.x, projectile.y)
+
+    def move_projectiles(self):
+        for projectile in self.projectiles:
+            projectile.move()
