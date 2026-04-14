@@ -22,6 +22,59 @@ class Enemy:
                 return True
         return False
 
+class Boss(Enemy):
+    def __init__(self, x, y, level, radius):
+        super().__init__(x, y, level, radius)
+        self.image = Picture("assets/images/Boss.png")
+        self.projectile_image = Picture("assets/images/EnemyMissile.png")
+        self.cooldown = time.time()
+        self.projectiles = []
+        self.health = 100
+
+    def is_hit_by_projectile(self, projectile: Projectile) -> bool:
+        return super().is_hit_by_projectile(projectile)
+
+    def move(self, enemy_dir, enemy_speed, descend_speed, should_descend):
+
+        next_x = self.x + enemy_dir * enemy_speed
+
+        if next_x + self.radius > 1 or next_x - self.radius < 0:
+            should_descend = True
+
+        if should_descend:
+            self.y -= descend_speed
+        else:
+            self.x += enemy_dir * enemy_speed
+
+        #Reverse direction
+        if should_descend:
+            enemy_dir *= -1
+
+        return enemy_dir
+
+    def shoot(self):
+        if time.time() - self.cooldown > random.randint(3,20):
+            print("SHOOT")
+            angles = [-45, -22.5, 0, 22.5, 45]
+            for a in angles:
+                radians = math.radians(270 + a)
+                dx = 0.002 * math.cos(radians)
+                dy = 0.002 * math.sin(radians)
+                self.projectiles.append(Projectile(self.x, self.y, dx, dy))
+            self.cooldown = time.time()
+
+    def draw(self):
+        for i in range(100):
+            if i < self.health:
+                stddraw.setPenColor(stddraw.RED)
+                stddraw.filledRectangle(0.05 + i * 0.009, 0.95, 0.008, 0.02)
+
+        stddraw.picture(self.image, self.x, self.y)
+
+        for projectile in self.projectiles:
+            projectile.move()
+            stddraw.picture(self.projectile_image, projectile.x, projectile.y)
+
 
 
 class Enemies:
@@ -120,4 +173,6 @@ class Enemies:
                 self.enemies.remove(enemy)
                 return True
         return False
+
+
 

@@ -34,14 +34,19 @@ def main() -> None:
                 transitioned = True
                 GamePage = Level1(width, height)
             else:
-                if 2500 <= GamePage.score < 5000 and not isinstance(GamePage, Level2):
+                if GamePage.score == 2500  and not isinstance(GamePage, Level2):
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level2(width, height, GamePage.stars)
-                if len(GamePage.enemies.enemies) == 0 and not isinstance(GamePage, Level3):
-                    Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
-                    Transition.draw()
-                    GamePage = Level3(width, height, GamePage.stars)
+                if isinstance(GamePage, Level2):
+                    if len(GamePage.enemies.enemies) == 0:
+                        Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
+                        Transition.draw()
+                        GamePage = Level3(width, height, GamePage.stars, GamePage.score, GamePage.lives)
+                if isinstance(GamePage, Level3):
+                    if GamePage.boss.health == 0:
+                        ... #Add a winner screen!
+
                 state = GamePage.run()
                 if GamePage.dead and not written and GamePage.score > highscore:
                     highscore = GamePage.score
