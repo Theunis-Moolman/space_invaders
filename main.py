@@ -8,7 +8,7 @@ def main() -> None:
     Menu = MenuPage(width, height)
     state = "MENU"
     # Sydwell did highscore text file
-    with open('src/stored/Highscore.txt', 'r') as f:
+    with open('src/Stored/Highscore.txt', 'r') as f:
         line = f.read().strip()
     print(line)
     if line == "":
