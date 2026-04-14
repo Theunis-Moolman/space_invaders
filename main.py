@@ -20,7 +20,7 @@ def main() -> None:
     transitioned: bool = False
 
     level1_paragraph = "Enemies do not shoot back for now..."
-    level2_paragraph = "Good luck! Enemies shoot back now! \n USE B FOR BLOCKING\n You have 5 lives!\n Enemies reaching line = INSTANT DEATH"
+    level2_paragraph = "Good luck! Enemies shoot back now! \n Look out for power ups\n You have 5 lives!\n Enemies reaching line = INSTANT DEATH"
     level3_paragraph = "Final boss reached! \n Hope you saved up lives..."
 
     while state != "ESCAPE":
@@ -38,7 +38,7 @@ def main() -> None:
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level2(width, height, GamePage.stars)
-                if GamePage.score >= 5000 and not isinstance(GamePage, Level3):
+                if len(GamePage.enemies.enemies) == 0 and not isinstance(GamePage, Level3):
                     Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level3(width, height, GamePage.stars)

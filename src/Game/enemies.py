@@ -8,17 +8,16 @@ from src.Game.spaceship import Projectile
 
 class Enemy:
     def __init__(self, x, y, level, radius):
-        self.enemy_x = x
-        self.enemy_y = y
+        self.x = x
+        self.y = y
         self.level = level
         self.radius = radius
 
-    def is_enemy_hit_by_projectile(self, projectile: Projectile):
+    def is_hit_by_projectile(self, projectile: Projectile) -> bool:
         for i in range(20):
             px = projectile.x - projectile.dx * (i/20)
             py = projectile.y - projectile.dy * (i/20)
-            distance = math.sqrt((self.enemy_x - px) ** 2 + (self.enemy_y - py) ** 2)
-            print(self.radius)
+            distance = math.sqrt((self.x - px) ** 2 + (self.y - py) ** 2)
             if distance <= self.radius + 0.01:
                 return True
         return False
@@ -52,7 +51,7 @@ class Enemies:
 
     def enemy_update(self, enemy_dir, enemy_speed, descend_speed, should_descend):
         for enemy in self.enemies:
-            next_x = enemy.enemy_x + enemy_dir * enemy_speed
+            next_x = enemy.x + enemy_dir * enemy_speed
             #Check wall collision
             if next_x + enemy.radius > 1 or next_x - enemy.radius < 0:
                 should_descend = True
@@ -61,9 +60,9 @@ class Enemies:
         for enemy in self.enemies:
             #Move enemies
             if should_descend:
-                enemy.enemy_y -= descend_speed
+                enemy.y -= descend_speed
             else:
-                enemy.enemy_x += enemy_dir * enemy_speed
+                enemy.x += enemy_dir * enemy_speed
 
         #Reverse direction
         if should_descend:
@@ -73,7 +72,7 @@ class Enemies:
 
     def check_death(self):
         for enemy in self.enemies:
-            if enemy.enemy_y - enemy.radius <= 0.205:
+            if enemy.y - enemy.radius <= 0.205:
                 return True
         return False
 
@@ -105,8 +104,8 @@ class Enemies:
 
             grid_size = len(alien_shape)
 
-            start_x = enemy.enemy_x - (grid_size / 2) * pixel_size
-            start_y = enemy.enemy_y + (grid_size / 2) * pixel_size
+            start_x = enemy.x - (grid_size / 2) * pixel_size
+            start_y = enemy.y + (grid_size / 2) * pixel_size
 
             for row in range(grid_size):
                 for col in range(grid_size):
@@ -117,7 +116,7 @@ class Enemies:
 
     def check_hit(self, projectile: Projectile):
         for enemy in self.enemies:
-            if enemy.is_enemy_hit_by_projectile(projectile):
+            if enemy.is_hit_by_projectile(projectile):
                 self.enemies.remove(enemy)
                 return True
         return False

@@ -4,6 +4,7 @@ from Game.spaceship import Player
 import random
 from color import Color
 from src.Game.controls import controls
+from src.Game.powerups import PowerUpHandler
 from src.states.end import EndPage
 import time
 from Music.music import Music
@@ -117,6 +118,10 @@ class Level2:
         self.enemies_shooting = []
         self.dead = False
         self.enemy_dir = 1
+        self.power_up_handler = PowerUpHandler()
+
+        self.shield_timer = 0
+        self.shield_cooldown = 10
 
         self.end_page = None
 
@@ -156,12 +161,14 @@ class Level2:
 
             self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed, False)
             self.enemies.draw_enemies()
+            self.power_up_handler.update()
+            self.power_up_handler.draw()
 
             # enemy shooting logic
             if random.randint(0, 60) < (self.score + 15000) // 10000 and self.shoot_countdown < 0 and len(self.enemies.enemies) > 0:
                 self.shoot_countdown = 60
                 self.hit = False
-                for i in range(random.randint(1, 5)):
+                for i in range(random.randint(1, 2)):
                     random_enemy = self.enemies.shoot()
                     if random_enemy is not None and random_enemy not in self.enemies_shooting:
                         self.enemies_shooting.append(self.enemies.shoot())
@@ -170,20 +177,6 @@ class Level2:
             if self.shoot_countdown == 20:
                 self.music.play("assets/Music/enemy_shoot")
 
-            for enemy in self.enemies_shooting:
-                if enemy in self.enemies.enemies:
-                    if 20 < self.shoot_countdown < 60:
-                        for i in range(100):
-                            stddraw.filledCircle(enemy.enemy_x, enemy.enemy_y - i / 100, 0.002)
-
-                    if 0 < self.shoot_countdown <= 20:
-                        stddraw.setPenColor(stddraw.RED)
-                        stddraw.setPenRadius(0.003)
-                        stddraw.line(enemy.enemy_x, enemy.enemy_y, enemy.enemy_x, 0)
-                        if (self.player.x + 1) / 2 - self.player.radius <= enemy.enemy_x <= (self.player.x + 1) / 2 + self.player.radius:
-                            if not self.hit:
-                                self.lives -= 1
-                            self.hit = True
 
             # player shooting
             if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.8:
@@ -193,12 +186,50 @@ class Level2:
 
             # check hits every frame
             for projectile in self.player.projectiles[:]:
+                power_up = self.power_up_handler.check_hit(projectile)
                 if self.enemies.check_hit(projectile):
                     self.score += 100
                     self.enemy_speed += 0.00008
                     self.player.projectiles.remove(projectile)
                     break
+                elif power_up != -1:
+                    if power_up == 1:
 
+                        self.shield_timer = time.time()
+                    elif power_up == 2:
+                        self.score += 500
+                    elif power_up == 3:
+                        self.lives += 1
+
+            for enemy in self.enemies_shooting:
+                if enemy in self.enemies.enemies:
+                    if 20 < self.shoot_countdown < 60:
+                        for i in range(100):
+                            stddraw.filledCircle(enemy.x, enemy.y - i / 100, 0.002)
+
+                    if 0 < self.shoot_countdown <= 20:
+                        stddraw.setPenColor(stddraw.RED)
+                        stddraw.setPenRadius(0.003)
+                        if time.time() - self.shield_timer > self.shield_cooldown:
+                            stddraw.line(enemy.x, enemy.y, enemy.x, 0)
+                            if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
+                                    self.player.x + 1) / 2 + self.player.radius:
+                                if not self.hit:
+                                    self.lives -= 1
+                                self.hit = True
+                        else:
+                            if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
+                                    self.player.x + 1) / 2 + self.player.radius:
+                                stddraw.line(enemy.x, enemy.y, enemy.x, (self.player.y + 1)/2 + self.player.radius + 0.07)
+                            else:
+                                stddraw.line(enemy.x, enemy.y, enemy.x, 0)
+
+
+            if time.time() - self.shield_timer < self.shield_cooldown:
+                stddraw.setPenColor(stddraw.WHITE)
+                x = (self.player.x + 1)/2
+                y = (self.player.y + 1)/2
+                stddraw.filledRectangle(x - self.player.radius, y + self.player.radius + 0.07, self.player.radius * 2, 0.02)
             self.player.move_projectiles()
             self.player.draw_projectiles()
 
