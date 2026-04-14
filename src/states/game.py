@@ -64,7 +64,7 @@ class Level1:
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
-            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed, False)
+            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False)
             self.enemies.draw_enemies()
             self.player.move_projectiles()
             self.player.draw_projectiles()
@@ -160,7 +160,7 @@ class Level2:
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
-            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed, False)
+            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False)
             self.enemies.draw_enemies()
             self.power_up_handler.update()
             self.power_up_handler.draw()
