@@ -16,12 +16,14 @@
 
 
 ### Features completed:
+- [x] Power ups completed
+- [x] Level 3 completed
 - [x] High score stored in a text file
 - [x] Lives are added level 2
 - [x] Music fixed
 - [x] Different enemy images as levels increase
 - [x] Enemies shooting back
-- [x] Level 2 is partially completed (STILL NEED TO ADD BLOCKING)
+- [x] Level 2 is completed 
 - [x] Transition screen
 - [x] Level 1 is completed
 - [x] Restart
