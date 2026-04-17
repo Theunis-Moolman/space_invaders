@@ -95,13 +95,13 @@ space_invaders/
 
 We declare that all music and sound effects used in this project are either original works or sourced from royalty-free / openly licensed libraries. The table below lists each audio asset and its origin.
 
-| File | Source | License / URL |
+| File | Source | URL |
 |------|--------|---------------|
 | `Music.wav` | [Source name here] | [Link or license here] |
 | `Defeat.wav` | [Source name here] | [Link or license here] |
 | `Victory.wav` | [Source name here] | [Link or license here] |
-| `shoot.wav` | [Claude] | [claude.ai] |
-| `enemy_shoot.wav` | [Claude] | [claude.ai] |
+| `shoot.wav` | Claude | claude.ai |
+| `enemy_shoot.wav` | Claude | claude.ai |
 
 ---
 
@@ -109,7 +109,7 @@ We declare that all music and sound effects used in this project are either orig
 
 We declare that all images and sprites used in this project are either original works or sourced from royalty-free / openly licensed libraries. The table below lists each image asset and its origin.
 
-| File | Source | License / URL |
+| File | Source | URL |
 |------|--------|---------------|
 | `Boss.png` | [Source name here] | [Link or license here] |
 | `EnemyMissile.png` | [Source name here] | [Link or license here] |
