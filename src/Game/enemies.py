@@ -57,7 +57,7 @@ class Boss(Enemy):
     def is_hit_by_projectile(self, projectile: Projectile) -> bool:
         return super().is_hit_by_projectile(projectile)
 
-    def move(self, enemy_dir, enemy_speed, descend_speed, should_descend):
+    def move(self, enemy_dir: int, enemy_speed: float, descend_speed: float, should_descend: bool):
         next_x = self.x + enemy_dir * enemy_speed
 
         if next_x + self.radius > 1 or next_x - self.radius < 0:
@@ -114,7 +114,7 @@ class Enemies:
         self.enemy_radius = 0.02
 
 
-    def create_enemies(self, level, rows, cols):
+    def create_enemies(self, level: int, rows: int, cols: int):
         enemy_x = 0.05
         enemy_y = 0.90
 
@@ -133,7 +133,7 @@ class Enemies:
 
                 self.enemies.append(new_enemy)
 
-    def enemy_update(self, enemy_dir, enemy_speed, descend_speed, should_descend):
+    def enemy_update(self, enemy_dir: int, enemy_speed: float, descend_speed: float, should_descend: bool):
         for enemy in self.enemies:
             next_x = enemy.x + enemy_dir * enemy_speed
             #Check wall collision

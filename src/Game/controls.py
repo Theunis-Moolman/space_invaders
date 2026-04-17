@@ -1,7 +1,7 @@
 from src.Game.spaceship import Player
 import stddraw
 
-def controls(player: Player, keys):
+def controls(player: Player, keys: list):
     """
     Function that handles player controls built on a key array passed to the function
 

@@ -2,6 +2,7 @@ import stddraw # type: ignore
 import math
 from src.Music.music import Music
 from picture import Picture
+from color import Color
 
 
 class Projectile:
@@ -40,7 +41,7 @@ class Player:
 
     Author: Sydwell and Theunis
     """
-    def __init__(self, x, y, radius, direction, speed, angle):
+    def __init__(self, x: float, y: float, radius: float, direction: int, speed: float, angle: float):
         self.x  = x
         self.y = y
         self.radius = radius
@@ -55,7 +56,7 @@ class Player:
         self.projectiles: list[Projectile] = []
 
     #Move player horizontally
-    def move_circle(self, width, direction,speed):
+    def move_circle(self, width: float, direction: int, speed: float):
         if self.x - self.radius < -1: #Prevents going off left edge
             self.x = -1 + self.radius
         if self.x + self.radius > width: #Prevents going off right edge
@@ -64,7 +65,7 @@ class Player:
 
 
     #Controls aiming direction
-    def line_rotate(self, is_clockwise , counterclockwise , rotation_speed):
+    def line_rotate(self, is_clockwise: bool, counterclockwise: bool, rotation_speed: float):
         #Rotate left
         if counterclockwise:
             self.angle += rotation_speed #increase angle
@@ -81,7 +82,7 @@ class Player:
 
         return counterclockwise, is_clockwise  #Returns updated values
 
-    def pixel(self, px, py, color):
+    def pixel(self, px: float, py: float, color: Color):
         stddraw.setPenColor(color)
         px = (px + 1)/2
         py = (py + 1)/2
@@ -141,7 +142,7 @@ class Player:
         stddraw.setPenColor(stddraw.RED)
         stddraw.line((self.x + 1)/2, (self.y + 1)/ 2 , (end_x + 1)/2, (end_y + 1)/2) #Shows where you are aiming
 
-    def shoot(self, speed_projectile):
+    def shoot(self, speed_projectile: float):
         radians = math.radians(self.angle) #Convert angles
         #Calculate movement direction
         dx = speed_projectile * math.cos(radians)
