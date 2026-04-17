@@ -87,7 +87,7 @@ space_invaders/
 | Name | Student Number |
 |------|---------------|
 | Sydwell | XXXXXXX |
-| Theunis | XXXXXXX |
+| Theunis | 28904516 |
 
 ---
 
@@ -100,8 +100,8 @@ We declare that all music and sound effects used in this project are either orig
 | `Music.wav` | [Source name here] | [Link or license here] |
 | `Defeat.wav` | [Source name here] | [Link or license here] |
 | `Victory.wav` | [Source name here] | [Link or license here] |
-| `shoot.wav` | [Source name here] | [Link or license here] |
-| `enemy_shoot.wav` | [Source name here] | [Link or license here] |
+| `shoot.wav` | [Claude] | [claude.ai] |
+| `enemy_shoot.wav` | [Claude] | [claude.ai] |
 
 ---
 
@@ -118,5 +118,3 @@ We declare that all images and sprites used in this project are either original 
 | `Projectile.png` | [Source name here] | [Link or license here] |
 | `Shield.png` | [Source name here] | [Link or license here] |
 | `Star.png` | [Source name here] | [Link or license here] |
-| `TIE_1.png` | [Source name here] | [Link or license here] |
-| `TIE_2.svg` | [Source name here] | [Link or license here] |
