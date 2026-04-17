@@ -1,6 +1,7 @@
 from color import Color
 import random
 import stddraw
+import time
 
 class EndPage:
     """
@@ -13,9 +14,10 @@ class EndPage:
 
     Author: Theunis
     """
-    def __init__(self, width: int, height: int, score: int):
+    def __init__(self, width: int, height: int, score: int, death_timer: float):
         self.stars = []
         self.score = score
+        self.death_timer = death_timer
 
         for i in range(600):
             rand_x = random.random()
@@ -47,3 +49,4 @@ class EndPage:
         stddraw.setFontSize(25)
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
+        stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(5 - time.time() + self.death_timer)} SECONDS")

@@ -31,7 +31,6 @@ class Level1:
         self.width = width
         self.height = height
         self.enemy_speed = 0.001
-        self.dead = False
         self.enemy_dir = 1
 
         self.projectile_shot: bool = False
@@ -40,6 +39,7 @@ class Level1:
 
         self.enemies.create_enemies(1, 5, 5)
         self.cooldown_timer = time.time()
+        self.death_timer = 0
 
         self.end_page = None
 
@@ -93,9 +93,11 @@ class Level1:
 
             self.projectile_shot = False
         else:
-            self.dead = True
+            if self.alive:
+                self.death_timer = time.time()
+                print(self.death_timer)
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score)
+                self.end_page = EndPage(self.width, self.height, self.score, time.time())
             self.end_page.draw()
             self.alive = False
         stddraw.show(20)
@@ -106,7 +108,7 @@ class Level1:
         self.projectile_shot = controls(self.player, keys)
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
-        if not self.alive and keys[stddraw.K_r]:
+        if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
             return "RESTART"
 
         return "PLAY"
@@ -143,7 +145,6 @@ class Level2:
         self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot"])
         self.shoot_countdown = -1
         self.enemies_shooting = []
-        self.dead = False
         self.enemy_dir = 1
         self.power_up_handler = PowerUpHandler()
 
@@ -159,6 +160,7 @@ class Level2:
         self.enemies.create_enemies(2, 5, 5)
         self.cooldown_timer = time.time()
         self.block_cooldown = time.time()
+        self.death_timer = 0
         self.hit = False
 
         self.stars = stars
@@ -261,9 +263,10 @@ class Level2:
             self.player.draw_projectiles()
 
         else:
-            self.dead = True
+            if self.alive:
+                self.death_timer = time.time()
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score)
+                self.end_page = EndPage(self.width, self.height, self.score, time.time())
             self.end_page.draw()
             self.alive = False
         stddraw.show(20)
@@ -275,7 +278,7 @@ class Level2:
         self.block = keys[stddraw.K_b]
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
-        if not self.alive and keys[stddraw.K_r]:
+        if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
             return "RESTART"
 
         return "PLAY"
@@ -306,7 +309,6 @@ class Level3:
         self.width = width
         self.height = height
         self.lives = lives
-        self.dead = False
         self.enemy_dir = 1
         self.power_up_handler = PowerUpHandler()
 
@@ -315,6 +317,7 @@ class Level3:
 
         self.projectile_shot: bool = False
         self.cooldown_timer = time.time()
+        self.death_timer = 0
         self.hit = False
 
         self.end_page = None
@@ -409,9 +412,10 @@ class Level3:
             self.player.draw_projectiles()
 
         else:
-            self.dead = True
+            if self.alive:
+                self.death_timer = time.time()
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score)
+                self.end_page = EndPage(self.width, self.height, self.score, time.time())
             self.end_page.draw()
             self.alive = False
 
@@ -423,7 +427,7 @@ class Level3:
         self.projectile_shot = controls(self.player, keys)
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
-        if not self.alive and keys[stddraw.K_r]:
+        if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
             return "RESTART"
 
         return "PLAY"

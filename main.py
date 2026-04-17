@@ -59,7 +59,7 @@ def main() -> None:
                         ... #Add a winner screen!
 
                 state = GamePage.run()
-                if GamePage.dead and not written and GamePage.score > highscore:
+                if not GamePage.alive and not written and GamePage.score > highscore:
                     highscore = GamePage.score
                     with open('src/Stored/Highscore.txt', 'w') as f:
                         f.write(str(highscore))
