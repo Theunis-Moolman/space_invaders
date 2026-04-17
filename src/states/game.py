@@ -393,7 +393,7 @@ class Level3:
             for projectile in self.boss.projectiles:
                 player_x = (self.player.x + 1) / 2
                 player_y = (self.player.y + 1) / 2
-                if math.hypot(projectile.x - player_x, projectile.y - player_y) < self.player.radius:
+                if math.hypot(projectile.x - player_x, projectile.y - player_y) < self.player.radius * 0.7:
                     if time.time() - self.shield_timer < self.shield_cooldown:
                         self.shield_timer = 0
                     else:
