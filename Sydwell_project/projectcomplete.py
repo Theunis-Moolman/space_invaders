@@ -98,8 +98,6 @@ def shoot(x,y,angle,speed_projectile):
     dy = speed_projectile * math.sin(radians)
 
     Music.sound(1000,44100)
-    
-    
 
     return {'x':x , 'y':y , 'dx':dx , 'dy':dy}
 

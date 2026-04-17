@@ -1,6 +1,6 @@
 import stddraw # type: ignore
 import math
-from Music.music import Music
+from src.Music.music import Music
 from picture import Picture
 
 #Sydwell's idea implemented in class form

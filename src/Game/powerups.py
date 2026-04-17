@@ -1,6 +1,6 @@
 import time
 from picture import Picture
-from Game.spaceship import Projectile
+from src.Game.spaceship import Projectile
 from src.Game.enemies import Enemy
 import random
 import stddraw

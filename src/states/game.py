@@ -1,13 +1,13 @@
 import stddraw
-from Game.enemies import Enemies, Boss
-from Game.spaceship import Player, Projectile
+from src.Game.enemies import Enemies, Boss
+from src.Game.spaceship import Player, Projectile
 import random
 from color import Color
 from src.Game.controls import controls
 from src.Game.powerups import PowerUpHandler
 from src.states.end import EndPage
 import time
-from Music.music import Music
+from src.Music.music import Music
 import math
 
 class Level1:

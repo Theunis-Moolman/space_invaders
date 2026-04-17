@@ -1,4 +1,4 @@
-from Game.spaceship import Player
+from src.Game.spaceship import Player
 import stddraw
 
 def controls(player: Player, keys):

@@ -1,7 +1,7 @@
 import math
 import stddraw
 import random
-from Music.music import Music
+from src.Music.music import Music
 from picture import Picture
 import time
 from src.Game.spaceship import Projectile
