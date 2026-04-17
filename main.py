@@ -22,7 +22,6 @@ def main() -> None:
 
     with open('src/Stored/Highscore.txt', 'r') as f:
         line = f.read().strip()
-    print(line)
     if line == "":
         highscore = 99999
     else:

@@ -76,7 +76,6 @@ class Boss(Enemy):
 
     def shoot(self):
         if time.time() - self.cooldown > random.randint(3,20):
-            print("SHOOT")
             angles = [-45, -22.5, 0, 22.5, 45]
             for a in angles:
                 radians = math.radians(270 + a)
