@@ -3,7 +3,7 @@ import math
 from src.Music.music import Music
 from picture import Picture
 
-#Sydwell's idea implemented in class form
+
 class Projectile:
     """
     Handle projectile that the player shoots and that the boss enemy shoots
