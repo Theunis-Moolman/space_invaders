@@ -1,6 +1,5 @@
 # Space Invaders
 
-A feature-rich Space Invaders remake built in Python using the `stddraw` library, featuring three progressively challenging levels, power-ups, a boss battle, and more.
 
 ---
 
@@ -21,9 +20,6 @@ A feature-rich Space Invaders remake built in Python using the `stddraw` library
 
 ### Three Unique Levels
 The game progresses across three levels, each with increasing difficulty. Level 2 carries your score forward, and Level 3 carries both your score and remaining lives into the final boss battle.
-
-### Rotatable Turret
-The player's turret can be rotated left and right using `A` and `D`, allowing for angled shots rather than just firing straight up. A red aiming line shows the current direction.
 
 ### Enemies Shoot Back (Level 2)
 In Level 2, enemies fire laser beams downward at the player. The shoot frequency scales with your score, making the game progressively harder the better you do. A wind-up animation warns you before the shot fires.
@@ -85,11 +81,6 @@ space_invaders/
 
 ---
 
-## Requirements
-
-See `requirements.txt` for dependencies. The project uses the `stddraw` and `picture` libraries for rendering.
-
----
 
 ## Authors
 
