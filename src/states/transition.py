@@ -2,6 +2,17 @@ import random
 import stddraw
 
 class TransitionPage:
+    """
+    Transition page for in between level that displays a title and a description with a scrolling effect
+
+    Args:
+        heading: String of the title to be displayed
+        paragraph: String of the paragraph to be displayed
+        stars: co-ordinates of the stars to display
+
+    
+    Author: Theunis
+    """
     def __init__(self, heading: str, paragraph: str, stars: list):
         self.heading = heading
         self.paragraph = paragraph.splitlines()

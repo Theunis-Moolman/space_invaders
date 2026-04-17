@@ -5,8 +5,25 @@ from src.Game.enemies import Enemy
 import random
 import stddraw
 
-#PowerUp with Enemy object inheritance for is_hit_by_projectile function because I am lazy
+
 class PowerUp(Enemy):
+    """
+    Power up object that inherits from enemy to handle being hit by projectiles
+
+    Args:
+        x: x co-ordinate of the power up object
+        y: y co-ordinate of the power up object
+        radius: radius of the power up object
+        level: Level specifies the power up object type:
+            1: Shield
+            2: Star
+            3: Heart
+        dx: change applied with each frame in the x-position
+        dy: change applied with each frame in the y-position
+
+
+    Author: Theunis and Sydwell
+    """
     def __init__(self, x: float, y: float, radius, level: int, dx: float, dy: float):
         super().__init__(x, y, level, radius)
         self.x = x
@@ -33,6 +50,14 @@ class PowerUp(Enemy):
         self.y += self.dy
 
 class PowerUpHandler:
+    """
+    Power up object handler that handles updating, drawing and checking if a power up is hit
+
+    Args:
+        None
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self):
         self.last_power_up = time.time()
         self.power_ups: list[PowerUp] = []

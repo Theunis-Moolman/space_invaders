@@ -4,6 +4,14 @@ import threading
 
 
 class Music:
+    """
+    Music handler that handles loading audio files, playing music in threads to prevent lag, and generating sound
+
+    Args:
+        None
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self):
         self.sounds = {}
 

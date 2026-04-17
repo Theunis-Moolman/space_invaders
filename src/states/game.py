@@ -11,6 +11,17 @@ from src.Music.music import Music
 import math
 
 class Level1:
+    """
+    Level 1 with players not shooting back at all
+    Basic space invaders type game play
+
+    Args:
+        width: width of the game window
+        height: height of the game window
+
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self, width: int, height: int):
         self.score: int = 0
         self.alive: bool = True
@@ -100,8 +111,23 @@ class Level1:
 
         return "PLAY"
         
-#Template for level 2
+
 class Level2:
+    """
+    Level 2 with the following additional features:
+        - Enemies shooting lasers
+        - Power ups:
+            - Heart: Extra life
+            - Star: Bonus points(500)
+            - Shield: Blocking enemy laser
+
+    Args:
+        width: width of the game window
+        height: height of the game window
+        stars: array of co-ordinates for stars from previous level
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self, width: int, height: int, stars: list):
         self.score: int = 2500
         self.alive: bool = True
@@ -254,8 +280,24 @@ class Level2:
 
         return "PLAY"
 
-#Template for level 3
+
 class Level3:
+    """
+    FINAL BOSS BATTLE:
+    One giant enemty that shoots projectiles in multiple directions
+    For fairness when player and enemy projectiles collide they destroy one another
+    Power ups are the same as in level 2
+    Lives are carried over from level 2
+
+    Args:
+        width: width of the game window
+        height: height of the game window
+        stars: array of co-ordinates to specify positions of stars from previous level
+        score: score carried over from previous level
+        lives: lives carried over from previous level
+
+    Author: Theunis and Sydwell
+    """
     def __init__(self, width: int, height: int, stars: list, score: int, lives: int):
         self.score: int = score
         self.alive: bool = True

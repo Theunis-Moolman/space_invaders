@@ -3,11 +3,23 @@ from src.states.game import Level1, Level2, Level3
 from src.states.transition import TransitionPage
 
 def main() -> None:
+    """
+    Main function that ties everything together
+    Handles displaying a high score
+    Uses a finite state machine to run the game in a continuous loop
+    Args:
+        None
+
+    Returns:
+        None
+
+    Author: Theunis and Sydwell
+    """
     width = 600
     height = 600
     Menu = MenuPage(width, height)
     state = "MENU"
-    # Sydwell did highscore text file
+
     with open('src/Stored/Highscore.txt', 'r') as f:
         line = f.read().strip()
     print(line)

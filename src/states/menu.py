@@ -5,6 +5,17 @@ from color import Color
 
 
 class MenuPage:
+    """
+    Menu page that is shown just at the start of the game:
+        - Displays high score
+        - Instructions on how to play the game
+
+    Args:
+        width (int): width of the window
+        height (int): height of the window
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self, width: int, height: int):
         self.finished = False
         self.timer = time.time()

@@ -3,6 +3,16 @@ import random
 import stddraw
 
 class EndPage:
+    """
+    End screen that shows the player's score and a game over message
+
+    Args:
+        width (int): width of the window
+        height (int): height of the window
+        score (int): score of the player
+
+    Author: Theunis
+    """
     def __init__(self, width: int, height: int, score: int):
         self.stars = []
         self.score = score

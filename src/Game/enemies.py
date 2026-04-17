@@ -1,13 +1,24 @@
 import math
 import stddraw
 import random
-from src.Music.music import Music
 from picture import Picture
 import time
 from src.Game.spaceship import Projectile
 
 class Enemy:
-    def __init__(self, x, y, level, radius):
+    """
+    Enemy object for level 1 and level 2 of the game
+
+    Args:
+        x (int): x position
+        y (int): y position
+        level (int): level
+        radius (int): radius of enemy
+
+
+    Author: Theunis and Sydwell
+    """
+    def __init__(self, x: float, y: float, level: int, radius: float):
         self.x = x
         self.y = y
         self.level = level
@@ -23,7 +34,19 @@ class Enemy:
         return False
 
 class Boss(Enemy):
-    def __init__(self, x, y, level, radius):
+    """
+    Boss object for level 3 of the game
+
+    Args:
+        x (int): x position
+        y (int): y position
+        level (int): level for initializing enemy object due to inheritance
+        radius
+
+
+    Author: Theunis and Sydwell
+    """
+    def __init__(self, x: float, y: float, level, radius):
         super().__init__(x, y, level, radius)
         self.image = Picture("assets/images/Boss.png")
         self.projectile_image = Picture("assets/images/EnemyMissile.png")
@@ -35,7 +58,6 @@ class Boss(Enemy):
         return super().is_hit_by_projectile(projectile)
 
     def move(self, enemy_dir, enemy_speed, descend_speed, should_descend):
-
         next_x = self.x + enemy_dir * enemy_speed
 
         if next_x + self.radius > 1 or next_x - self.radius < 0:
@@ -78,6 +100,15 @@ class Boss(Enemy):
 
 
 class Enemies:
+    """
+    Enemy handler for handling enemy creation, updating enemies, checking hits, , shooting
+
+    Args:
+        None
+
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self):
         self.enemies = []
         self.enemy_radius = 0.02
@@ -135,7 +166,6 @@ class Enemies:
             return random_enemy
         return None
 
-    #Sydwell made this
     def draw_enemies(self): #made for 0 to 1 scale
         i = int(time.time() % 1 < 0.5)
         for enemy in self.enemies:

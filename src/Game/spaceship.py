@@ -5,11 +5,21 @@ from picture import Picture
 
 #Sydwell's idea implemented in class form
 class Projectile:
-    def __init__(self, x, y, dx, dy):
-        self.x = x
-        self.y = y
-        self.dx = dx
-        self.dy = dy
+    """
+    Handle projectile that the player shoots and that the boss enemy shoots
+
+    Args:
+        x: x coordinate of the projectile
+        y: y coordinate of the projectile
+
+
+    Author: Sydwell and Theunis
+    """
+    def __init__(self, x: float, y: float, dx: float, dy: float):
+        self.x: float = x
+        self.y: float = y
+        self.dx: float = dx
+        self.dy: float = dy
 
     def move(self):
         self.x += self.dx
@@ -17,6 +27,19 @@ class Projectile:
 
 
 class Player:
+    """
+    Handle the spaceship drawing, moving, shooting, turret rotating and projectiles shot by the player
+
+    Args:
+        x: x coordinate of the player
+        y: y coordinate of the player
+        radius: radius of the player
+        direction: direction of the player movement
+        speed: speed of the player movement
+        angle: angle of the player's turret
+
+    Author: Sydwell and Theunis
+    """
     def __init__(self, x, y, radius, direction, speed, angle):
         self.x  = x
         self.y = y
