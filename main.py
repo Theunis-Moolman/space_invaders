@@ -1,6 +1,7 @@
 from src.states.menu import MenuPage
 from src.states.game import Level1, Level2, Level3
 from src.states.transition import TransitionPage
+from src.Music.music import Music
 
 def main() -> None:
     """
@@ -33,6 +34,10 @@ def main() -> None:
     level1_paragraph = "Enemies do not shoot back for now..."
     level2_paragraph = "Good luck! Enemies shoot back now! \n Look out for power ups\n You have 5 lives!\n Enemies reaching line = INSTANT DEATH"
     level3_paragraph = "Final boss reached! \n Hope you saved up lives..."
+
+    music = Music()
+    music.load(['assets/Music/Music'])
+    music.play('assets/Music/Music')
 
     while state != "ESCAPE":
         if state == "MENU":
