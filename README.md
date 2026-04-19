@@ -119,4 +119,4 @@ We declare that all images and sprites used in this project are either original 
 | `Projectile.png` | [Source name here] | [Link or license here] |
 | `Shield.png` | [Source name here] | [Link or license here] |
 | `Star.png` | [Source name here] | [Link or license here] |
-| `Victory.png` | [Source name here] | [Link or license here] |
+
