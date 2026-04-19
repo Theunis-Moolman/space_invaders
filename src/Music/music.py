@@ -1,7 +1,7 @@
 import stdaudio
 import math
 import threading
-
+ 
 
 class Music:
     """
@@ -10,18 +10,29 @@ class Music:
     Args:
         None
 
-    Author: Sydwell and Theunis
+    Author: Sydwell, Ben and Theunis
     """
     def __init__(self):
         self.sounds = {}
+        self._playing=False
 
     def load(self, titles):
         for title in titles:
             self.sounds[title] = stdaudio.read(title)
 
-    def play(self, title):
-        thread = threading.Thread(target=stdaudio.playSamples, args=(self.sounds[title],), daemon=True)
+    def play(self, title, loop=False):
+        self._playing=True
+        def _play():
+            while self._playing:
+                stdaudio.playSamples(self.sounds[title])
+                if not loop:
+                    break
+        thread = threading.Thread(target=_play, daemon=True)
         thread.start()
+        
+
+    def stop(self):
+        self._playing = False
 
     def sound(self, pitch, rate):
         SAMPLE_RATE = rate  # Standard audio sample rate

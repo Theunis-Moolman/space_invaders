@@ -14,7 +14,7 @@ def main() -> None:
     Returns:
         None
 
-    Author: Theunis and Sydwell
+    Author: Theunis, Ben and Sydwell
     """
     width = 600
     height = 600
@@ -37,13 +37,14 @@ def main() -> None:
 
     music = Music()
     music.load(['assets/Music/Music'])
-    music.play('assets/Music/Music')
+    music.play('assets/Music/Music', loop = True)
 
     while state != "ESCAPE":
         if state == "MENU":
             state = Menu.run()
         elif state == "PLAY":
             if not transitioned:
+                music.stop() 
                 written = False
                 Transition = TransitionPage("Level 1", level1_paragraph, Menu.stars)
                 Transition.draw()
