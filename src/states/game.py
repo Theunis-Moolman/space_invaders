@@ -340,6 +340,8 @@ class Level3:
         self.shield_timer = 0
         self.shield_cooldown = 10
 
+        self.score_timer = time.time()
+
         self.projectile_shot: bool = False
         self.cooldown_timer = time.time()
         self.death_timer = 0
@@ -347,6 +349,7 @@ class Level3:
 
         self.end_page = None
         self.stars = stars
+        self.score_bonus = False
 
     def check_distance(self, projectile1: Projectile, projectile2: Projectile) -> bool:
         distance = math.hypot(projectile1.x - projectile2.x, projectile1.y - projectile2.y)
@@ -449,7 +452,14 @@ class Level3:
                 self.end_page = EndPage(self.width, self.height, self.score, time.time())
             self.end_page.draw()
             self.alive = False
+        elif self.boss.health <= 0:
+            if not self.score_bonus:
+                self.score_bonus = True
+                self.score += 2000
 
+        if time.time() - self.score_timer > 10:
+            self.score_timer = time.time()
+            self.score += 100
         stddraw.show(20)
         self._clean_up()
 
