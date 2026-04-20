@@ -3,6 +3,7 @@ from src.states.game import Level1, Level2, Level3
 from src.states.transition import TransitionPage
 from src.Music.music import Music
 
+
 def main() -> None:
     """
     Main function that ties everything together
@@ -60,7 +61,7 @@ def main() -> None:
                     Transition.draw()
                     GamePage = Level3(width, height, GamePage.stars, GamePage.score, GamePage.lives)
                 elif GamePage.check_completion() and isinstance(GamePage, Level3):
-                    ... #Add winner screen
+                    
                     if GamePage.score > highscore and not written:
                         highscore = GamePage.score
                         with open('src/Stored/Highscore.txt', 'w') as f:

@@ -9,6 +9,7 @@ from src.states.end import EndPage
 import time
 from src.Music.music import Music
 import math
+from src.states.victory import Victory
 
 class Level1:
     """
@@ -456,6 +457,10 @@ class Level3:
             if not self.score_bonus:
                 self.score_bonus = True
                 self.score += 2000
+            if self.end_page is None:
+                self.end_page = Victory(self.width, self.height, self.score, time.time())
+            self.end_page.draw()
+            self.alive = False
 
         if time.time() - self.score_timer > 10:
             self.score_timer = time.time()
