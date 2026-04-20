@@ -102,6 +102,16 @@ class Level1:
             self.alive = False
         stddraw.show(20)
 
+        self._clean_up()
+
+    def _clean_up(self):
+        copy_projectile: list = []
+        for projectile in self.player.projectiles:
+            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
+                copy_projectile.append(projectile)
+
+        self.player.projectiles = copy_projectile
+
     def run(self):
         self.draw()
         keys = stddraw.getKeysPressed()
@@ -112,6 +122,9 @@ class Level1:
             return "RESTART"
 
         return "PLAY"
+
+    def check_completion(self):
+        return self.score == 2500
         
 
 class Level2:
@@ -194,13 +207,13 @@ class Level2:
             self.power_up_handler.draw()
 
             # enemy shooting logic
-            if random.randint(0, 60) < (self.score + 15000) // 10000 and self.shoot_countdown < 0 and len(self.enemies.enemies) > 0:
+            if random.randint(0, 120) == 1 and self.shoot_countdown < 0 and len(self.enemies.enemies) > 0:
                 self.shoot_countdown = 60
                 self.hit = False
-                for i in range(random.randint(1, 2)):
-                    random_enemy = self.enemies.shoot()
-                    if random_enemy is not None and random_enemy not in self.enemies_shooting:
-                        self.enemies_shooting.append(self.enemies.shoot())
+
+                random_enemy = self.enemies.shoot()
+                if random_enemy is not None and random_enemy not in self.enemies_shooting:
+                    self.enemies_shooting.append(random_enemy)
 
             self.shoot_countdown -= 1
             if self.shoot_countdown == 20:
@@ -230,28 +243,28 @@ class Level2:
                     elif power_up == 3:
                         self.lives += 1
 
+            self.enemies_shooting = [enemy for enemy in self.enemies_shooting if enemy in self.enemies.enemies]
             for enemy in self.enemies_shooting:
-                if enemy in self.enemies.enemies:
-                    if 20 < self.shoot_countdown < 60:
-                        for i in range(100):
-                            stddraw.filledCircle(enemy.x, enemy.y - i / 100, 0.002)
+                if 20 < self.shoot_countdown < 60:
+                    for i in range(100):
+                        stddraw.filledCircle(enemy.x, enemy.y - i / 100, 0.002)
 
-                    if 0 < self.shoot_countdown <= 20:
-                        stddraw.setPenColor(stddraw.RED)
-                        stddraw.setPenRadius(0.003)
-                        if time.time() - self.shield_timer > self.shield_cooldown:
-                            stddraw.line(enemy.x, enemy.y, enemy.x, 0)
-                            if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
-                                    self.player.x + 1) / 2 + self.player.radius:
-                                if not self.hit:
-                                    self.lives -= 1
-                                self.hit = True
+                if 0 < self.shoot_countdown <= 20:
+                    stddraw.setPenColor(stddraw.RED)
+                    stddraw.setPenRadius(0.003)
+                    if time.time() - self.shield_timer > self.shield_cooldown:
+                        stddraw.line(enemy.x, enemy.y, enemy.x, 0)
+                        if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
+                                self.player.x + 1) / 2 + self.player.radius:
+                            if not self.hit:
+                                self.lives -= 1
+                            self.hit = True
+                    else:
+                        if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
+                                self.player.x + 1) / 2 + self.player.radius:
+                            stddraw.line(enemy.x, enemy.y, enemy.x, (self.player.y + 1)/2 + self.player.radius + 0.07)
                         else:
-                            if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
-                                    self.player.x + 1) / 2 + self.player.radius:
-                                stddraw.line(enemy.x, enemy.y, enemy.x, (self.player.y + 1)/2 + self.player.radius + 0.07)
-                            else:
-                                stddraw.line(enemy.x, enemy.y, enemy.x, 0)
+                            stddraw.line(enemy.x, enemy.y, enemy.x, 0)
 
 
             if time.time() - self.shield_timer < self.shield_cooldown:
@@ -269,7 +282,16 @@ class Level2:
                 self.end_page = EndPage(self.width, self.height, self.score, time.time())
             self.end_page.draw()
             self.alive = False
+        self._clean_up()
         stddraw.show(20)
+
+    def _clean_up(self):
+        copy_projectile: list = []
+        for projectile in self.player.projectiles:
+            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
+                copy_projectile.append(projectile)
+
+        self.player.projectiles = copy_projectile
 
     def run(self):
         self.draw()
@@ -282,6 +304,9 @@ class Level2:
             return "RESTART"
 
         return "PLAY"
+
+    def check_completion(self):
+        return len(self.enemies.enemies) == 0
 
 
 class Level3:
@@ -343,7 +368,7 @@ class Level3:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        if self.boss.health > 0 and self.lives > 0:
+        if not self.check_completion() and self.lives > 0:
             self.player.draw_spaceship(0.1, stddraw.WHITE, False)
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
@@ -383,12 +408,18 @@ class Level3:
                         self.lives += 1
 
             #check if player projectiles hit enemy projectiles
+
+            to_remove_player: list = []
+            to_remove_boss: list = []
             for player_projectile in self.player.projectiles:
                 for enemy_projectile in self.boss.projectiles:
                     if self.check_distance(player_projectile, enemy_projectile):
-                        self.player.projectiles.remove(player_projectile)
-                        self.boss.projectiles.remove(enemy_projectile)
+                        to_remove_player.append(player_projectile)
+                        to_remove_boss.append(enemy_projectile)
 
+            self.player.projectiles = [projectile for projectile in self.player.projectiles if projectile not in to_remove_player]
+            self.boss.projectiles = [projectile for projectile in self.boss.projectiles if
+                                       projectile not in to_remove_boss]
             # check boss projectiles hit player
             for projectile in self.boss.projectiles:
                 player_x = (self.player.x + 1) / 2
@@ -411,7 +442,7 @@ class Level3:
             self.player.move_projectiles()
             self.player.draw_projectiles()
 
-        else:
+        elif self.lives < 0:
             if self.alive:
                 self.death_timer = time.time()
             if self.end_page is None:
@@ -420,6 +451,22 @@ class Level3:
             self.alive = False
 
         stddraw.show(20)
+        self._clean_up()
+
+    def _clean_up(self):
+        copy_projectile_player: list = []
+        for projectile in self.player.projectiles:
+            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
+                copy_projectile_player.append(projectile)
+
+        self.player.projectiles = copy_projectile_player
+
+        copy_projectile_boss: list = []
+        for projectile in self.boss.projectiles:
+            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
+                copy_projectile_boss.append(projectile)
+
+        self.boss.projectiles = copy_projectile_boss
 
     def run(self):
         self.draw()
@@ -431,3 +478,6 @@ class Level3:
             return "RESTART"
 
         return "PLAY"
+
+    def check_completion(self) -> bool:
+        return self.boss.health <= 0

@@ -24,7 +24,7 @@ def main() -> None:
     with open('src/Stored/Highscore.txt', 'r') as f:
         line = f.read().strip()
     if line == "":
-        highscore = 99999
+        highscore = 0
     else:
         highscore = float(line)
     written:bool = False
@@ -51,18 +51,21 @@ def main() -> None:
                 transitioned = True
                 GamePage = Level1(width, height)
             else:
-                if GamePage.score == 2500  and not isinstance(GamePage, Level2):
+                if GamePage.check_completion()  and isinstance(GamePage, Level1):
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
                     GamePage = Level2(width, height, GamePage.stars)
-                if isinstance(GamePage, Level2):
-                    if len(GamePage.enemies.enemies) == 0:
-                        Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
-                        Transition.draw()
-                        GamePage = Level3(width, height, GamePage.stars, GamePage.score, GamePage.lives)
-                if isinstance(GamePage, Level3):
-                    if GamePage.boss.health == 0:
-                        ... #Add a winner screen!
+                elif GamePage.check_completion() and isinstance(GamePage, Level2):
+                    Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
+                    Transition.draw()
+                    GamePage = Level3(width, height, GamePage.stars, GamePage.score, GamePage.lives)
+                elif GamePage.check_completion() and isinstance(GamePage, Level3):
+                    ... #Add winner screen
+                    if GamePage.score > highscore and not written:
+                        highscore = GamePage.score
+                        with open('src/Stored/Highscore.txt', 'w') as f:
+                            f.write(str(highscore))
+                        written = True
 
                 state = GamePage.run()
                 if not GamePage.alive and not written and GamePage.score > highscore:

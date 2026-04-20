@@ -51,7 +51,6 @@ class Player:
         self.dx = 0
         self.dy = 0
         self.size = 0.02
-        self.pixels = []
         self.music = Music()
         self.projectiles: list[Projectile] = []
 
@@ -82,7 +81,7 @@ class Player:
 
         return counterclockwise, is_clockwise  #Returns updated values
 
-    def pixel(self, px: float, py: float, color: Color):
+    def _pixel(self, px: float, py: float, color: Color):
         stddraw.setPenColor(color)
         px = (px + 1)/2
         py = (py + 1)/2
@@ -90,50 +89,47 @@ class Player:
 
     def draw_spaceship(self, line_length,change_color,is_hit=False):
         hit_color = change_color if is_hit else stddraw.WHITE  #If hit, flash color
-
-        # Define the spaceship shape using relative coordinates (dx, dy, color)
-        self.pixels = []
         # Tip of ship
-        self.pixels.append((0, 10, hit_color))
+        pixels = [(0, 10, hit_color)]
 
         # wings and body using for loops
         for i in [-1, 1]:
-            self.pixels.append((i, 9, hit_color))
-            self.pixels.append((2 * i, 8, hit_color))
-            self.pixels.append((3 * i, 7, hit_color))
-            self.pixels.append((3 * i, 6, hit_color))
-            self.pixels.append((3 * i, 5, hit_color))
-            self.pixels.append((4 * i, 4, hit_color))
-            self.pixels.append((5 * i, 3, hit_color))
-            self.pixels.append((6 * i, 2, hit_color))
+            pixels.append((i, 9, hit_color))
+            pixels.append((2 * i, 8, hit_color))
+            pixels.append((3 * i, 7, hit_color))
+            pixels.append((3 * i, 6, hit_color))
+            pixels.append((3 * i, 5, hit_color))
+            pixels.append((4 * i, 4, hit_color))
+            pixels.append((5 * i, 3, hit_color))
+            pixels.append((6 * i, 2, hit_color))
 
             for j in range(-1, -4, -1):
-                self.pixels.append((7 * i, j, hit_color))
+                pixels.append((7 * i, j, hit_color))
 
-            self.pixels.append((7 * i, 0, hit_color))
-            self.pixels.append((7 * i, 1, hit_color))
-            self.pixels.append((6 * i, -4, hit_color))
-            self.pixels.append((5 * i, -4, hit_color))
-            self.pixels.append((4 * i, -3, hit_color))
-            self.pixels.append((3 * i, -3, hit_color))
-            self.pixels.append((2 * i, -3, hit_color))
-            self.pixels.append((1 * i, -3, hit_color))
+            pixels.append((7 * i, 0, hit_color))
+            pixels.append((7 * i, 1, hit_color))
+            pixels.append((6 * i, -4, hit_color))
+            pixels.append((5 * i, -4, hit_color))
+            pixels.append((4 * i, -3, hit_color))
+            pixels.append((3 * i, -3, hit_color))
+            pixels.append((2 * i, -3, hit_color))
+            pixels.append((1 * i, -3, hit_color))
 
             # Flame in red
             for k in range(1, 5):
-                self.pixels.append((k * i, -2, stddraw.RED if not is_hit else hit_color))
+                pixels.append((k * i, -2, stddraw.RED if not is_hit else hit_color))
 
             # Vertical midsection
             for k in range(-1, 4):
-                self.pixels.append((2 * i, k, hit_color))
+                pixels.append((2 * i, k, hit_color))
 
         # Convert angle to radians for math functions
         #radian = math.radians(angle)-math.pi/2
         radians = math.radians(self.angle)
 
         # Draw each part of the ship after rotation(Relative to ship position)
-        for dx, dy, color in self.pixels:
-            self.pixel(self.x + dx * self.size, self.y + dy * self.size, color)
+        for dx, dy, color in pixels:
+            self._pixel(self.x + dx * self.size, self.y + dy * self.size, color)
 
         # Optional: Draw a direction line
         end_x = self.x + line_length * math.cos(radians)
