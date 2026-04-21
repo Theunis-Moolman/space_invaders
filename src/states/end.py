@@ -3,6 +3,9 @@ import random
 import stddraw
 import time
 
+from Music.music import Music
+
+
 class EndPage:
     """
     End screen that shows the player's score and a game over message
@@ -18,6 +21,9 @@ class EndPage:
         self.stars = []
         self.score = score
         self.death_timer = death_timer
+        self.music = Music()
+        self.music.load(["assets/Music/gameover"])
+        self.music.play("assets/Music/gameover", loop=True)
 
         for i in range(600):
             rand_x = random.random()
@@ -50,3 +56,6 @@ class EndPage:
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
         stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(5 - time.time() + self.death_timer)} SECONDS")
+
+    def stop_music(self):
+        self.music.stop()

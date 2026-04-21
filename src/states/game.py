@@ -42,6 +42,10 @@ class Level1:
         self.cooldown_timer = time.time()
         self.death_timer = 0
 
+        self.music = Music()
+        self.music.load(["assets/Music/level1"])
+        self.music.play("assets/Music/level1", loop=True)
+
         self.end_page = None
 
         self.stars = []
@@ -95,6 +99,7 @@ class Level1:
             self.projectile_shot = False
         else:
             if self.alive:
+                self.music.stop()
                 self.death_timer = time.time()
                 print(self.death_timer)
             if self.end_page is None:
@@ -103,6 +108,8 @@ class Level1:
             self.alive = False
         stddraw.show(20)
 
+        if self.check_completion():
+            self.music.stop()
         self._clean_up()
 
     def _clean_up(self):
@@ -120,6 +127,7 @@ class Level1:
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
         if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
+            self.end_page.stop_music()
             return "RESTART"
 
         return "PLAY"
@@ -156,7 +164,8 @@ class Level2:
         self.block = False
         self.lives = 5
         self.music = Music()
-        self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot"])
+        self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot", "assets/Music/level2"])
+        self.music.play("assets/Music/level2", loop=True)
         self.shoot_countdown = -1
         self.enemies_shooting = []
         self.enemy_dir = 1
@@ -275,9 +284,12 @@ class Level2:
                 stddraw.filledRectangle(x - self.player.radius, y + self.player.radius + 0.07, self.player.radius * 2, 0.02)
             self.player.move_projectiles()
             self.player.draw_projectiles()
+            if self.check_completion():
+                self.music.stop()
 
         else:
             if self.alive:
+                self.music.stop()
                 self.death_timer = time.time()
             if self.end_page is None:
                 self.end_page = EndPage(self.width, self.height, self.score, time.time())
@@ -302,6 +314,7 @@ class Level2:
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
         if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
+            self.end_page.stop_music()
             return "RESTART"
 
         return "PLAY"
@@ -453,6 +466,7 @@ class Level3:
 
         elif self.lives <= 0:
             if self.alive:
+                self.music.stop()
                 self.death_timer = time.time()
             if self.end_page is None:
                 self.end_page = EndPage(self.width, self.height, self.score, time.time())
@@ -498,6 +512,7 @@ class Level3:
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
         if not self.alive and (keys[stddraw.K_r] or (not self.check_completion() and time.time() - self.death_timer > 5) or (self.check_completion() and time.time() - self.victory_timer > 15)):
+            self.end_page.stop_music()
             return "RESTART"
 
         return "PLAY"

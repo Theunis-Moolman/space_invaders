@@ -42,5 +42,8 @@ class Victory:
 
         stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(15 - time.time() + self.win_timer)} SECONDS")
 
+    def stop_music(self):
+        self.music_handler.stop()
+
 
         
