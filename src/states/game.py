@@ -446,7 +446,7 @@ class Level3:
             self.player.move_projectiles()
             self.player.draw_projectiles()
 
-        elif self.lives < 0:
+        elif self.lives <= 0:
             if self.alive:
                 self.death_timer = time.time()
             if self.end_page is None:
