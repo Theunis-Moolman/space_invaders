@@ -1,0 +1,53 @@
+import stdaudio
+import math
+import threading
+import pygame 
+
+class Music:
+    """
+    Music handler that handles loading audio files, playing music in threads to prevent lag, and generating sound
+
+    Args:
+        None
+
+    Author: Sydwell, Ben and Theunis
+    """
+    def __init__(self):
+        self.sounds = {}
+        self._playing=False
+
+    def load(self, titles):
+        for title in titles:
+            self.sounds[title] = stdaudio.read(title)
+
+    def play(self, title, loop=False):
+        self._playing=True
+        def _play():
+            while self._playing:
+                stduadio.playSamples(self.sounds[title])
+                if not loop:
+                    break
+        thread = threading.Thread(target=_play, daemon=True)
+        thread.start()
+        
+
+    def stop(self):
+        self._playing = False
+
+    def sound(self, pitch, rate):
+        SAMPLE_RATE = rate  # Standard audio sample rate
+        duration = 0.2       # 200 milliseconds
+        frequency = pitch
+        samples = []
+        for i in range(int(SAMPLE_RATE * duration)):
+            t = i / SAMPLE_RATE
+        # Volume decays over time
+            volume = 1.0 - (t / duration)  
+        # Frequency slides down slightly for effect
+            freq = frequency * (1.0 - 0.3 * t / duration)  
+            sample = volume * math.sin(2 * math.pi * freq * t)
+            samples.append(sample)
+    
+        #stdaudio.playSamples(samples)
+
+
