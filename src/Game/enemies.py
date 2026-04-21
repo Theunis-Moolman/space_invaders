@@ -4,6 +4,7 @@ import random
 from picture import Picture
 import time
 from src.Game.spaceship import Projectile
+from src.Music.music import Music
 
 class Enemy:
     """
@@ -50,6 +51,8 @@ class Boss(Enemy):
         super().__init__(x, y, level, radius)
         self.image = Picture("assets/images/Boss.png")
         self.projectile_image = Picture("assets/images/EnemyMissile.png")
+        self.music = Music()
+        self.music.load(["assets/Music/boss_cannon"])
         self.cooldown = time.time()
         self.projectiles = []
         self.health = 100
@@ -76,6 +79,7 @@ class Boss(Enemy):
 
     def shoot(self):
         if time.time() - self.cooldown > random.randint(3,20):
+            self.music.play("assets/Music/boss_cannon")
             angles = [-45, -22.5, 0, 22.5, 45]
             for a in angles:
                 radians = math.radians(270 + a)

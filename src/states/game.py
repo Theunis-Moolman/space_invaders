@@ -337,6 +337,10 @@ class Level3:
         self.lives = lives
         self.enemy_dir = 1
         self.power_up_handler = PowerUpHandler()
+        self.music = Music()
+
+        self.music.load(["assets/Music/boss_music"])
+        self.music.play("assets/Music/boss_music", loop=True)
 
         self.shield_timer = 0
         self.shield_cooldown = 10
@@ -345,7 +349,8 @@ class Level3:
 
         self.projectile_shot: bool = False
         self.cooldown_timer = time.time()
-        self.death_timer = 0
+        self.death_timer = None
+        self.victory_timer = None
         self.hit = False
 
         self.end_page = None
@@ -454,6 +459,9 @@ class Level3:
             self.end_page.draw()
             self.alive = False
         elif self.boss.health <= 0:
+            self.music.stop()
+            if self.alive:
+                self.victory_timer = time.time()
             if not self.score_bonus:
                 self.score_bonus = True
                 self.score += 2000
@@ -489,7 +497,7 @@ class Level3:
         self.projectile_shot = controls(self.player, keys)
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
-        if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
+        if not self.alive and (keys[stddraw.K_r] or (not self.check_completion() and time.time() - self.death_timer > 5) or (self.check_completion() and time.time() - self.victory_timer > 15)):
             return "RESTART"
 
         return "PLAY"

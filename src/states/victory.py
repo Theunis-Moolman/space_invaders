@@ -1,5 +1,6 @@
 import stddraw
 import time
+from src.Music.music import Music
 
 class Victory:
     """
@@ -11,11 +12,18 @@ class Victory:
         self.height = height
         self.score = score
         self.win_timer = win_timer
+        self.played_victory = False
+        self.music_handler = Music()
+
+        self.music_handler.load(["assets/Music/Victory"])
 
     def draw(self):
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0, 1, 1)
+        if not self.played_victory:
+            self.music_handler.play("assets/Music/Victory")
+            self.played_victory = True
 
         # Victory message
         stddraw.setFontSize(80)
@@ -31,4 +39,8 @@ class Victory:
         stddraw.setFontSize(25)
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
+
+        stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(15 - time.time() + self.win_timer)} SECONDS")
+
+
         
