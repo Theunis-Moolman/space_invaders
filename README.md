@@ -103,7 +103,10 @@ We declare that all music and sound effects used in this project are either orig
 | `Victory.wav` | [Source name here] | [Link or license here] |
 | `shoot.wav` | Claude | claude.ai |
 | `enemy_shoot.wav` | Claude | claude.ai |
-
+| `Level1.wav` | degoose | https://freesound.org/people/degoose/sounds/580912/ |
+| `Level2.wav` | Juhani Junkala | https://opengameart.org/content/5-chiptunes-action |
+| `gameover.wav` | bevibeldesign (Freesound) | https://pixabay.com/sound-effects/film-special-effects-sucked-into-classroom-103774/ |
+| `boss_music.wav` | Tchaikovsky (Audio Library) | https://www.youtube.com/watch?v=SylTHospNKM&list=RDSylTHospNKM&start_radio=1 |
 ---
 
 ## Image Declaration
