@@ -3,7 +3,7 @@ import random
 import stddraw
 import time
 
-from Music.music import Music
+from src.Music.music import Music
 
 
 class EndPage:
