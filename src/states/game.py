@@ -122,7 +122,7 @@ class Level1:
                 self.end_page = EndPage(self.width, self.height, self.players, time.time(), self.highscore)
             self.end_page.draw()
             self.alive = False
-        stddraw.setPenColor(stddraw.DARK_GRAY)
+        stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0.85, 1, 0.15)
         stddraw.setPenColor(stddraw.ORANGE)
         stddraw.setFontSize(20)
@@ -308,7 +308,7 @@ class Level2:
             self.end_page.draw()
             self.alive = False
 
-        stddraw.setPenColor(stddraw.DARK_GRAY)
+        stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0.85, 1, 0.15)
         stddraw.setPenColor(stddraw.ORANGE)
         stddraw.setFontSize(20)
@@ -316,8 +316,10 @@ class Level2:
             stddraw.text(0.3, 0.9, f"Score: {self.players[0].score}")
             stddraw.text(0.6, 0.9, f"Lives: {self.players[0].lives}")
         else:
+            stddraw.text(0.225, 0.95, "PLAYER 1")
             stddraw.text(0.125, 0.9, f"Score: {self.players[0].score}")
             stddraw.text(0.4, 0.9, f"Lives: {self.players[0].lives}")
+            stddraw.text(0.8, 0.95, "PLAYER 2")
             stddraw.text(0.65, 0.9, f"Score: {self.players[1].score}")
             stddraw.text(0.9, 0.9, f"Lives: {self.players[1].lives}")
         stddraw.show(20)
@@ -496,10 +498,8 @@ class Level3:
             stddraw.text(0.3, 0.9, f"Score: {self.players[0].score}")
             stddraw.text(0.6, 0.9, f"Lives: {self.players[0].lives}")
         else:
-            stddraw.text(0.225, 0.95, "PLAYER 1")
             stddraw.text(0.125, 0.9, f"Score: {self.players[0].score}")
             stddraw.text(0.4, 0.9, f"Lives: {self.players[0].lives}")
-            stddraw.text(0.8, 0.95, "PLAYER 2")
             stddraw.text(0.65, 0.9, f"Score: {self.players[1].score}")
             stddraw.text(0.9, 0.9, f"Lives: {self.players[1].lives}")
         stddraw.show(20)
