@@ -183,7 +183,7 @@ class Level2:
         self.enemy_speed = 0.001
         self.block = False
         self.music = Music()
-        self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot", "assets/Music/level2"])
+        self.music.load(["assets/Music/enemy_shoot", "assets/Music/level2"])
         self.music.play("assets/Music/level2", loop=True)
         self.shoot_countdown = -1
         self.enemies_shooting = []
