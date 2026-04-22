@@ -170,7 +170,6 @@ class Player:
             dx = speed_projectile * math.cos(radians)
             dy = speed_projectile * math.sin(radians)
 
-            self.music.sound(1000,44100) #Play shooting sound
             projectile = Projectile((self.x + 1)/2, (self.y + 1)/2, dx, dy)
             self.projectiles.append(projectile)
             self.projectile_shot = False
