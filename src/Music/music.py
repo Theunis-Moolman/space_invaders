@@ -34,7 +34,7 @@ class Music:
                     break
         thread = threading.Thread(target=_play, daemon=True)
         thread.start()
-        
+
 
     def stop(self):
         self._playing = False

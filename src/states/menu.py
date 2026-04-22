@@ -4,7 +4,7 @@ import random
 from color import Color
 
 
-class MenuPage:
+class MenuPageSingle:
     """
     Menu page that is shown just at the start of the game:
         - Displays high score
@@ -16,21 +16,14 @@ class MenuPage:
 
     Author: Sydwell and Theunis
     """
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, highscore: int):
         self.finished = False
         self.timer = time.time()
         self.width = width
         self.height = height
         self.stars = []
-
-        #Sydwell did highscore text file
-        with open('src/stored/Highscore.txt', 'r') as f:
-            line = f.read().strip()
-
-        if line == "":
-            self.highscore = 99999
-        else:
-            self.highscore = int(line)
+        self.highscore = highscore
+        self.fontsize = min(self.width, self.height) // 40
 
         for i in range(250):
             rand_x = random.random()
@@ -43,7 +36,17 @@ class MenuPage:
 
         stddraw.setXscale(0, 1)
         stddraw.setYscale(0, 1)
-        stddraw.setCanvasSize(width, height)
+
+        self.instructions = [
+            f"Highscore: {self.highscore}",
+            "USE THE a AND d KEYS TO MOVE SIDEWAYS",
+            "USE THE w KEY TO SHOOT",
+            "USE Q AND E TO CHANGE SHOOTING ANGLE",
+            "PRESS SPACE TO PLAY!",
+            "",
+            "PRESS ESCAPE TO EXIT",
+            "PRESS M TO ENABLE MULTIPLAYER"
+        ]
 
     def draw(self):
         stddraw.clear()
@@ -64,25 +67,14 @@ class MenuPage:
         stddraw.filledRectangle(0.1, 0.2, 0.8, 0.5)
         stddraw.setPenColor(stddraw.WHITE)
         stddraw.setFontFamily("Courier New")
-        stddraw.setFontSize(min(self.width, self.height) // 10)
+        stddraw.setFontSize(self.fontsize * 2)
         stddraw.text(0.5, 0.9, "SPACE INVADERS")
 
-        instructions = [
-            f"Highscore: {self.highscore}",
-            "",
-            "USE THE LEFT AND RIGHT ARROW KEYS TO MOVE SIDEWAYS",
-            "USE THE UP ARROW TO SHOOT",
-            "USE A AND D TO CHANGE SHOOTING ANGLE",
-            "PRESS SPACE TO PLAY!",
-            "",
-            "PRESS ESCAPE TO EXIT",
-        ]
-
-        stddraw.setFontSize(min(self.width, self.height) // 40)
+        stddraw.setFontSize(self.fontsize)
         line_height = 1 / 20
         start_y = 0.6
 
-        for i, line in enumerate(instructions):
+        for i, line in enumerate(self.instructions):
             y = start_y - i * line_height
             stddraw.text(0.5, y, line)
 
@@ -97,4 +89,32 @@ class MenuPage:
                 return "PLAY"
             if key == chr(27):
                 return "ESCAPE"
+            if key == "m":
+                return "MULTI"
+        return "MENU"
+
+class MenuPageMulti(MenuPageSingle):
+    def __init__(self, width: int, height: int, highscore: int):
+        super().__init__(width, height, highscore)
+        self.instructions = self.instructions = [
+            f"Highscore: {self.highscore}",
+            "PLAYER 1: a/d MOVE, w SHOOT, q/e ANGLE",
+            "PLAYER 2: j/l MOVE, i SHOOT, u/o ANGLE",
+            "PRESS SPACE TO PLAY!",
+            "",
+            "PRESS ESCAPE TO EXIT",
+            "PRESS S TO ENABLE SINGLEPLAYER"
+        ]
+        self.fontsize = min(self.width, self.height) // 40
+
+    def run(self):
+        self.draw()
+        if stddraw.hasNextKeyTyped():
+            key = stddraw.nextKeyTyped()
+            if key == " ":
+                return "PLAY"
+            if key == chr(27):
+                return "ESCAPE"
+            if key == "s":
+                return "SINGLE"
         return "MENU"

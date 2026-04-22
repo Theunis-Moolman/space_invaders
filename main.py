@@ -1,7 +1,8 @@
-from src.states.menu import MenuPage
+from src.states.menu import MenuPageSingle, MenuPageMulti
 from src.states.game import Level1, Level2, Level3
 from src.states.transition import TransitionPage
 from src.Music.music import Music
+import stddraw
 
 
 def main() -> None:
@@ -19,7 +20,7 @@ def main() -> None:
     """
     width = 600
     height = 600
-    Menu = MenuPage(width, height)
+    stddraw.setCanvasSize(width, height)
     state = "MENU"
 
     with open('src/Stored/Highscore.txt', 'r') as f:
@@ -27,8 +28,9 @@ def main() -> None:
     if line == "":
         highscore = 0
     else:
-        highscore = float(line)
-    written:bool = False
+        highscore = int(line)
+    multiplayer: bool = False
+    Menu = MenuPageSingle(width, height, highscore)
 
     transitioned: bool = False
 
@@ -43,37 +45,37 @@ def main() -> None:
     while state != "ESCAPE":
         if state == "MENU":
             state = Menu.run()
+        elif state == "SINGLE":
+            multiplayer = False
+            Transition = TransitionPage("1 PLAYER", "Activated", Menu.stars)
+            Transition.draw()
+            Menu = MenuPageSingle(width, height, highscore)
+            state = Menu.run()
+        elif state == "MULTI":
+            multiplayer = True
+            Transition = TransitionPage("2 PLAYER", "Activated", Menu.stars)
+            Transition.draw()
+            Menu = MenuPageMulti(width, height, highscore)
+            state = Menu.run()
         elif state == "PLAY":
             if not transitioned:
-                music.stop() 
-                written = False
+                music.stop()
                 Transition = TransitionPage("Level 1", level1_paragraph, Menu.stars)
                 Transition.draw()
                 transitioned = True
-                GamePage = Level1(width, height)
+                GamePage = Level1(width, height, multiplayer, highscore)
             else:
                 if GamePage.check_completion()  and isinstance(GamePage, Level1):
                     Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
                     Transition.draw()
-                    GamePage = Level2(width, height, GamePage.stars)
+                    GamePage = Level2(width, height, GamePage.stars, multiplayer, GamePage.players, highscore)
                 elif GamePage.check_completion() and isinstance(GamePage, Level2):
                     Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
                     Transition.draw()
-                    GamePage = Level3(width, height, GamePage.stars, GamePage.score, GamePage.lives)
-                elif GamePage.check_completion() and isinstance(GamePage, Level3):
-                    
-                    if GamePage.score > highscore and not written:
-                        highscore = GamePage.score
-                        with open('src/Stored/Highscore.txt', 'w') as f:
-                            f.write(str(highscore))
-                        written = True
+                    GamePage = Level3(width, height, GamePage.stars, GamePage.players, highscore)
 
                 state = GamePage.run()
-                if not GamePage.alive and not written and GamePage.score > highscore:
-                    highscore = GamePage.score
-                    with open('src/Stored/Highscore.txt', 'w') as f:
-                        f.write(str(highscore))
-                    written = True
+
 
 
         elif state == "RESTART":

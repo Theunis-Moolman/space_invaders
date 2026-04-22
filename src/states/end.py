@@ -17,9 +17,9 @@ class EndPage:
 
     Author: Theunis
     """
-    def __init__(self, width: int, height: int, score: int, death_timer: float):
+    def __init__(self, width: int, height: int, players, death_timer: float, highscore: int):
         self.stars = []
-        self.score = score
+        self.players = players
         self.death_timer = death_timer
         self.music = Music()
         self.music.load(["assets/Music/gameover"])
@@ -33,6 +33,12 @@ class EndPage:
 
             colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
             self.stars.append((rand_x, rand_y, radius, colour))
+
+        for player in self.players:
+            if player.score > highscore:
+                highscore = player.score
+                with open('src/Stored/Highscore.txt', 'w') as f:
+                    f.write(str(highscore))
 
     def draw(self):
         stddraw.clear()
@@ -49,9 +55,17 @@ class EndPage:
         stddraw.setFontSize(80)
         stddraw.setPenColor(stddraw.RED)
         stddraw.text(0.5, 0.7, "GAME OVER")
-        stddraw.setFontSize(40)
+        stddraw.setFontSize(20)
         stddraw.setPenColor(stddraw.WHITE)
-        stddraw.text(0.5, 0.5, f"Score: {self.score}")
+        if len(self.players) > 1:
+            if self.players[0].score > self.players[1].score:
+                stddraw.text(0.5, 0.5, f"Player 1 won with score: {self.players[0].score}")
+            elif self.players[1].score > self.players[0].score:
+                stddraw.text(0.5, 0.5, f"Player 2 won with score: {self.players[1].score}")
+            else:
+                stddraw.text(0.5, 0.5, f"Draw: {self.players[0].score}")
+        else:
+            stddraw.text(0.5, 0.5, f"Score: {self.players[0].score}")
         stddraw.setFontSize(25)
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")

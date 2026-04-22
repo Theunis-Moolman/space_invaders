@@ -3,6 +3,7 @@ import math
 from src.Music.music import Music
 from picture import Picture
 from color import Color
+import time
 
 
 class Projectile:
@@ -41,7 +42,7 @@ class Player:
 
     Author: Sydwell and Theunis
     """
-    def __init__(self, x: float, y: float, radius: float, direction: int, speed: float, angle: float):
+    def __init__(self, x: float, y: float, radius: float, direction: int, speed: float, angle: float, player_num: int):
         self.x  = x
         self.y = y
         self.radius = radius
@@ -52,7 +53,22 @@ class Player:
         self.dy = 0
         self.size = 0.02
         self.music = Music()
+        self.player_num = player_num
         self.projectiles: list[Projectile] = []
+        self.projectile_shot = False
+        self.shooting_cooldown = time.time()
+        self.shield_cooldown = 10
+        self.shield_timer = 0
+        self.lives = 5
+        self.score = 0
+        self.hit = True
+
+    def control_player(self):
+        keys = stddraw.getKeysPressed()
+        if self.player_num == 1:
+            self.projectile_shot = controls1(self, keys)
+        else:
+            self.projectile_shot = controls2(self, keys)
 
     #Move player horizontally
     def move_circle(self, width: float, direction: int, speed: float):
@@ -61,6 +77,14 @@ class Player:
         if self.x + self.radius > width: #Prevents going off right edge
             self.x = 1 - self.radius
         self.x += direction * speed
+
+    def clean_up(self):
+        copy_projectile: list = []
+        for projectile in self.projectiles:
+            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
+                copy_projectile.append(projectile)
+
+        self.projectiles = copy_projectile
 
 
     #Controls aiming direction
@@ -87,8 +111,9 @@ class Player:
         py = (py + 1)/2
         stddraw.filledSquare(px, py, self.size)
 
-    def draw_spaceship(self, line_length,change_color,is_hit=False):
-        hit_color = change_color if is_hit else stddraw.WHITE  #If hit, flash color
+    def draw_spaceship(self, line_length, change_color):
+        hit_color = change_color
+        is_hit = False
         # Tip of ship
         pixels = [(0, 10, hit_color)]
 
@@ -139,15 +164,24 @@ class Player:
         stddraw.line((self.x + 1)/2, (self.y + 1)/ 2 , (end_x + 1)/2, (end_y + 1)/2) #Shows where you are aiming
 
     def shoot(self, speed_projectile: float):
-        radians = math.radians(self.angle) #Convert angles
-        #Calculate movement direction
-        dx = speed_projectile * math.cos(radians)
-        dy = speed_projectile * math.sin(radians)
+        if time.time() - self.shooting_cooldown > 0.8:
+            radians = math.radians(self.angle) #Convert angles
+            #Calculate movement direction
+            dx = speed_projectile * math.cos(radians)
+            dy = speed_projectile * math.sin(radians)
 
-        self.music.sound(1000,44100) #Play shooting sound
-        projectile = Projectile((self.x + 1)/2, (self.y + 1)/2, dx, dy)
-        self.projectiles.append(projectile)
-        return dx, dy #use Player.x and Player.y to get x and y
+            self.music.sound(1000,44100) #Play shooting sound
+            projectile = Projectile((self.x + 1)/2, (self.y + 1)/2, dx, dy)
+            self.projectiles.append(projectile)
+            self.projectile_shot = False
+            self.shooting_cooldown = time.time()
+
+    def shield(self):
+        if time.time() - self.shield_timer < self.shield_cooldown:
+            stddraw.setPenColor(stddraw.WHITE)
+            x = (self.x + 1) / 2
+            y = (self.y + 1) / 2
+            stddraw.filledRectangle(x - self.radius, y + self.radius + 0.07, self.radius * 2, 0.02)
 
     def draw_projectiles(self) -> None:
         for projectile in self.projectiles:
@@ -157,3 +191,75 @@ class Player:
     def move_projectiles(self):
         for projectile in self.projectiles:
             projectile.move()
+
+    def check_hit_laser(self, enemy):
+        if time.time() - self.shield_timer > self.shield_cooldown and not self.hit:
+            self.hit = True
+            if (self.x + 1) / 2 - self.radius <= enemy.x <= (
+                    self.x + 1) / 2 + self.radius:
+                self.lives -= 1
+                return True
+        return False
+
+    def check_hit_projectile(self, projectiles):
+        projectiles_to_remove = []
+        if time.time() - self.shield_timer > self.shield_cooldown:
+            for projectile in projectiles:
+                if math.hypot(self.x - projectile.x, self.y - projectile.y) < self.radius * 0.7:
+                    self.lives -= 1
+                    projectiles_to_remove.append(projectile)
+        return [projectile for projectile in projectiles if projectile not in projectiles_to_remove]
+
+
+
+def controls1(player: Player, keys: list):
+    """
+    Function that handles player controls built on a key array passed to the function
+
+    Args:
+        player: Player object to be moved
+        keys: array of bools of each key that is pressed (True if pressed)
+
+    Returns:
+        True - Projectile is shot
+        False - Projectile is not shot
+
+    Author: Theunis
+    """
+    if keys[stddraw.K_d]:
+        player.move_circle(1, 1, 0.02)
+    elif keys[stddraw.K_a]:
+        player.move_circle(1, -1, 0.02)
+    elif keys[stddraw.K_q]:
+        player.line_rotate(False, True, 5)
+    elif keys[stddraw.K_e]:
+        player.line_rotate(True, False, 5)
+    if keys[stddraw.K_w]:
+        return True
+    return False
+
+def controls2(player: Player, keys: list):
+    """
+    Function that handles player controls built on a key array passed to the function
+
+    Args:
+        player: Player object to be moved
+        keys: array of bools of each key that is pressed (True if pressed)
+
+    Returns:
+        True - Projectile is shot
+        False - Projectile is not shot
+
+    Author: Theunis
+    """
+    if keys[stddraw.K_l]:
+        player.move_circle(1, 1, 0.02)
+    elif keys[stddraw.K_j]:
+        player.move_circle(1, -1, 0.02)
+    elif keys[stddraw.K_u]:
+        player.line_rotate(False, True, 5)
+    elif keys[stddraw.K_o]:
+        player.line_rotate(True, False, 5)
+    if keys[stddraw.K_i]:
+        return True
+    return False
