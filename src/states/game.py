@@ -1,11 +1,9 @@
 import stddraw
 
-from Game.spaceship import Player
 from src.Game.enemies import Enemies, Boss
 from src.Game.spaceship import Player, Projectile
 import random
 from color import Color
-from src.Game.controls import controls1, controls2
 from src.Game.powerups import PowerUpHandler
 from src.states.end import EndPage
 import time
