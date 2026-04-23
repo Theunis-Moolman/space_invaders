@@ -203,8 +203,9 @@ class Player:
     def check_hit_projectile(self, projectiles):
         projectiles_to_remove = []
         if time.time() - self.shield_timer > self.shield_cooldown:
-            for projectile in projectiles:
-                if math.hypot(self.x - projectile.x, self.y - projectile.y) < self.radius * 0.7:
+
+            for projectile in projectiles[:]:
+                if math.hypot((self.x + 1)/2 - projectile.x, (self.y + 1)/2 - projectile.y) < self.radius * 0.7:
                     self.lives -= 1
                     projectiles_to_remove.append(projectile)
         return [projectile for projectile in projectiles if projectile not in projectiles_to_remove]
