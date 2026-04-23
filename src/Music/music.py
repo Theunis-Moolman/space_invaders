@@ -18,7 +18,7 @@ class Music:
 
     def load(self, titles):
         for title in titles:
-            self.sounds[title] = list(stdaudio.read(title))
+            self.sounds[title] = stdaudio.read(title)
 
     def play(self, title, loop=False):
         self._playing=True
@@ -29,7 +29,7 @@ class Music:
                     if not self._playing:
                         return
                     else:
-                        stdaudio.playSamples(list(samples[i:i+4096]))
+                        stdaudio.playSamples(samples[i:i+4096])
                 if not loop:
                     break
         thread = threading.Thread(target=_play, daemon=True)
