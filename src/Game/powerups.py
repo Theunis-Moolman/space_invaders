@@ -84,8 +84,8 @@ class PowerUpHandler:
             x = random.random()
             y = random.random() * 0.4 + 0.5
             # Gives a random speed to the power up
-            dx = random.random() * 0.001 + 0.001
-            dy = random.random() * dx
+            dx = (random.random() * 0.001 + 0.001) * random.choice([-1, 1])
+            dy = random.random() * dx * random.choice([-1, 1])
 
             # Creates a power up object
             power_up = PowerUp(x, y, 0.02, random.randint(1, 3), dx, dy)
