@@ -11,10 +11,10 @@ class Enemy:
     Enemy object for level 1 and level 2 of the game
 
     Args:
-        x (int): x position
-        y (int): y position
+        x (float): x position
+        y (float): y position
         level (int): level
-        radius (int): radius of enemy
+        radius (float): radius of enemy
 
 
     Author: Theunis and Sydwell
@@ -39,8 +39,8 @@ class Boss(Enemy):
     Boss object for level 3 of the game
 
     Args:
-        x (int): x position
-        y (int): y position
+        x (float): x position
+        y (float): y position
         level (int): level for initializing enemy object due to inheritance
         radius
 

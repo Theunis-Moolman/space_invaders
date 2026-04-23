@@ -13,7 +13,9 @@ class EndPage:
     Args:
         width (int): width of the window
         height (int): height of the window
-        score (int): score of the player
+        players (Player): Player objects to evaluate scores
+        death_timer: Timer to display time left before game restarts
+        highscore: For saving high score
 
     Author: Theunis
     """
