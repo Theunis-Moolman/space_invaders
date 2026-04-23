@@ -101,7 +101,7 @@ space_invaders/
 
 | Name | Student Number |
 |------|---------------|
-| Sydwell | XXXXXXX |
+| Sydwell | 26396769 |
 | Theunis | 28904516 |
 | Benjamin | 29139147 |
 
@@ -113,8 +113,8 @@ We declare that all music and sound effects used in this project are either orig
 
 | File | Source | URL |
 |------|--------|---------------|
-| `Music.wav` | [Source name here] | [Link or license here] |
-| `Victory.wav` | [Source name here] | [Link or license here] |
+| `Music.wav` | [website-pixabay | https://pixabay.com/music/search/fps%20game/ |
+| `Victory.wav` | website-pixabay | [Link or license here] |
 | `shoot.wav` | Claude | claude.ai |
 | `enemy_shoot.wav` | Claude | claude.ai |
 | `Level1.wav` | degoose | https://freesound.org/people/degoose/sounds/580912/ |
@@ -129,10 +129,10 @@ We declare that all images and sprites used in this project are either original 
 
 | File | Source | URL |
 |------|--------|---------------|
-| `Boss.png` | [Source name here] | [Link or license here] |
-| `EnemyMissile.png` | [Source name here] | [Link or license here] |
-| `Heart.png` | [Source name here] | [Link or license here] |
+| `Boss.png` | Website-kindpng | https://www.kindpng.com/imgv/TohbJo_enemy-spaceship-png-png-download-sprite-png-space/ |
+| `EnemyMissile.png` | Freepik-ai | https://www.freepik.com/free-photos-vectors/pixelated-space-shooter |
+| `Heart.png` | WEbsite-itch |https://itch.io/game-assets/tag-shoot-em-up/tag-space-shooter |
 | `Projectile.png` | [Source name here] | [Link or license here] |
-| `Shield.png` | [Source name here] | [Link or license here] |
-| `Star.png` | [Source name here] | [Link or license here] |
+| `Shield.png` | WEbsite-itch |https://itch.io/game-assets/tag-shoot-em-up/tag-space-shooter |
+| `Star.png` | Website- kindpng | https://www.kindpng.com/imgv/TohbJo_enemy-spaceship-png-png-download-sprite-png-space/ |
 
