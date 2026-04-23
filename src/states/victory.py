@@ -14,12 +14,18 @@ class Victory:
     ):
         self.width = width
         self.players = players
-        self.win_timer = win_timer
-        self.played_victory = False
-        self.music_handler = Music()
 
+        # Store the timer reference to calculate the auto-restart countdown
+        self.win_timer = win_timer
+
+        # Flag to make sure victory music only play once
+        self.played_victory = False
+
+        # Initialise the music and handler and load the victory track
+        self.music_handler = Music()
         self.music_handler.load(["assets/Music/Victory"])
 
+        # Update high score if any player beats it
         for player in self.players:
             if player.score > highscore:
                 highscore = player.score
@@ -27,9 +33,12 @@ class Victory:
                     f.write(str(highscore))
 
     def draw(self):
+        #Cleaar screen and set black background
         stddraw.clear()
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0, 1, 1)
+
+        # Play victory music on the first draw call 
         if not self.played_victory:
             self.music_handler.play("assets/Music/Victory")
             self.played_victory = True
@@ -41,6 +50,7 @@ class Victory:
         stddraw.setFontSize(20)
         # Score
         if len(self.players) > 1:
+            # Multiplayer: determine winner by comparing scores
             if self.players[0].score > self.players[1].score:
                 stddraw.text(
                     0.5, 0.5, f"Player 1 won with score: {self.players[0].score}"
@@ -50,15 +60,18 @@ class Victory:
                     0.5, 0.5, f"Player 2 won with score: {self.players[1].score}"
                 )
             else:
+                # Draw if scores are equal
                 stddraw.text(0.5, 0.5, f"Draw: {self.players[0].score}")
         else:
+            # Simply show score if single palyer
             stddraw.text(0.5, 0.5, f"Score: {self.players[0].score}")
 
-        # Restart / Exit instructions
+        # Restart and player instructions
         stddraw.setFontSize(25)
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
 
+        # Calculate and display seconds before auto restart
         stddraw.text(
             0.5,
             0.1,
@@ -66,4 +79,5 @@ class Victory:
         )
 
     def stop_music(self):
+        # Stop the victory music
         self.music_handler.stop()
