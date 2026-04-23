@@ -1,15 +1,16 @@
 import stddraw
+
 from src.Game.enemies import Enemies, Boss
 from src.Game.spaceship import Player, Projectile
 import random
 from color import Color
-from src.Game.controls import controls
 from src.Game.powerups import PowerUpHandler
 from src.states.end import EndPage
 import time
 from src.Music.music import Music
 import math
 from src.states.victory import Victory
+
 
 class Level1:
     """
@@ -23,110 +24,215 @@ class Level1:
 
     Author: Sydwell and Theunis
     """
-    def __init__(self, width: int, height: int):
+
+    def __init__(self, width: int, height: int, multiplayer: bool, highscore: int):
+        # Keep track of player score
         self.score: int = 0
+
+        # Check if player is alive
         self.alive: bool = True
-        self.iteration_num: int = 0
-        self.player = Player(0, -0.85, 0.2, 0, 0, 90)
+
+        # Array of players to handle multi-player case
+        self.players = []
+
+        # Keep track of player high score
+        self.highscore = highscore
+
+        # Multiplayer bool for setting multiplayer mode
+        self.multiplayer: bool = multiplayer
+
+        # Create players depending on multiplayer setting
+        if multiplayer:
+            self.players.append(Player(0.1, -0.85, 0.2, 0, 0, 90, 1))
+            self.players.append(Player(0.9, -0.85, 0.2, 0, 0, 90, 2))
+        else:
+            self.players.append(Player(0.1, -0.85, 0.2, 0, 0, 90, 1))
+
+        # List of all enemy objects
         self.enemies = Enemies()
+
+        # Keep track of width and height for dynamic star size generation
         self.width = width
         self.height = height
+
+        # Set enemy speed
         self.enemy_speed = 0.001
+
+        # Set initial enemy direction (To the right)
         self.enemy_dir = 1
 
-        self.projectile_shot: bool = False
-        self.projectile_dx = 0
-        self.projectile_dy = 0
-
+        # Create enemies (5 by 5)
         self.enemies.create_enemies(1, 5, 5)
-        self.cooldown_timer = time.time()
+
+        # Keep track of how long the player has been dead
         self.death_timer = 0
 
+        # Music handler
+        self.music = Music()
+
+        # Preload the level1 music
+        self.music.load(["assets/Music/level1"])
+
+        # Play level 1 music in a continuous loop
+        self.music.play("assets/Music/level1", loop=True)
+
+        # Variable for handling self.end_page
         self.end_page = None
 
+        # List of star co-ordinates, radii and colors
         self.stars = []
 
+        # Generate 600 stars
         for i in range(600):
+            # Generate random star co-ordinate
             rand_x = random.random()
             rand_y = random.random()
+
+            # Generate random radius for variable star size
             radius = random.random() * min(self.width, self.height) / 500000
             #
 
+            # Set color of star with Color(130 to 220, 130 - 220, 255) -> Values found through experimentation
             colour = Color(random.randrange(130, 220), random.randrange(130, 220), 255)
+
+            # Append stars to list of stars
             self.stars.append((rand_x, rand_y, radius, colour))
 
     def draw(self) -> None:
+        # Clear the canvas
         stddraw.clear()
+
+        # Draw a black background
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0, 1, 1)
 
-        stddraw.setPenColor(stddraw.WHITE)
-        stddraw.text(0.5, 0.9, f"Score: {self.score}")
-
+        # Draw all the stars
         for x, y, radius, colour in self.stars:
             probability = random.random()
+
+            # Using probability to create a flickering effect for the stars
             if probability < 0.99:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
+
+        # Check if the player has died and continue with game if not
         if not self.enemies.check_death():
-            self.player.draw_spaceship(0.1, stddraw.WHITE, False)
+            # Smaller pen radius for line to determine where the enemies hit the player will die
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
+
+            # Create a dotted line where if the enemy hit this line the player dies
             for i in range(100):
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
-            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False)
+            # Go through each player object
+            for i, player in enumerate(self.players):
+                # Different colors for each player
+                if i % 2 == 0:
+                    player.draw_spaceship(0.1, stddraw.WHITE)
+                else:
+                    player.draw_spaceship(0.1, stddraw.LIGHT_GRAY)
+
+                # List to keep track of projectiles to remove to make sure objects aren't removed while iterating
+                projectiles_to_remove = None
+                for projectile in player.projectiles:
+                    # Check if an enemy is hit, update score, delete projectile and make enemies faster
+                    if self.enemies.check_hit(projectile):
+                        player.score += 100
+                        self.enemy_speed += 0.00008
+                        projectiles_to_remove = projectile
+                        break
+                # Delete the projectile used to destroy an enemy object
+                if projectiles_to_remove is not None:
+                    player.projectiles.remove(projectiles_to_remove)
+
+                # Update projectile co-ordinates
+                player.move_projectiles()
+
+                # Draw all the projectiles
+                player.draw_projectiles()
+
+                # Check for player controls
+                player.control_player()
+
+                # Check if player shoots
+                if player.projectile_shot:
+                    player.shoot(0.008)
+
+                # Clean up projectiles that have left the screen
+                player.clean_up()
+
+            # Handle enemy movement
+            self.enemy_dir = self.enemies.enemy_update(
+                self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False
+            )
+            # Draw enemies
             self.enemies.draw_enemies()
-            self.player.move_projectiles()
-            self.player.draw_projectiles()
-
-            if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.8:
-                self.cooldown_timer = time.time()
-                self.player.shoot(0.008)
-
-            for projectile in self.player.projectiles:
-                if self.enemies.check_hit(projectile):
-                    self.score += 100
-                    self.enemy_speed += 0.00008
-                    self.player.projectiles.remove(projectile)
-                    break
-
-            self.projectile_shot = False
         else:
             if self.alive:
+                # Stop music to prevent audio clashes
+                self.music.stop()
+
+                # Keep track of how long the player is dead
                 self.death_timer = time.time()
-                print(self.death_timer)
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score, time.time())
+                # Create an end page that counts down before restarting
+                self.end_page = EndPage(
+                    self.width, self.height, self.players, time.time(), self.highscore
+                )
+
+            # Draw the end page
             self.end_page.draw()
+
+            # Update that the player is dead
             self.alive = False
+
+        # Draw scores and lives of the players
+        stddraw.setPenColor(stddraw.BLACK)
+        stddraw.filledRectangle(0, 0.85, 1, 0.15)
+        stddraw.setPenColor(stddraw.ORANGE)
+        stddraw.setFontSize(20)
+        if not self.multiplayer:
+            stddraw.text(0.3, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.6, 0.9, f"Lives: {self.players[0].lives}")
+        else:
+            stddraw.text(0.225, 0.95, "PLAYER 1")
+            stddraw.text(0.125, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.4, 0.9, f"Lives: {self.players[0].lives}")
+            stddraw.text(0.8, 0.95, "PLAYER 2")
+            stddraw.text(0.65, 0.9, f"Score: {self.players[1].score}")
+            stddraw.text(0.9, 0.9, f"Lives: {self.players[1].lives}")
+
         stddraw.show(20)
 
-        self._clean_up()
-
-    def _clean_up(self):
-        copy_projectile: list = []
-        for projectile in self.player.projectiles:
-            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
-                copy_projectile.append(projectile)
-
-        self.player.projectiles = copy_projectile
+        # Check if game is completed to stop music to prevent audio clashes in the next level
+        if self.check_completion():
+            self.music.stop()
 
     def run(self):
+        # Draw the level 1 page
         self.draw()
+
+        # Array of bools of all keys pressed to handle escape
         keys = stddraw.getKeysPressed()
-        self.projectile_shot = controls(self.player, keys)
+
+        # Check if escape is pressed to stop the game
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
+
+        # Check if r is pressed in end game page to restart the game before 5 seconds are over
         if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
+            self.end_page.stop_music()
             return "RESTART"
 
+        # Default to continue game play state
         return "PLAY"
 
     def check_completion(self):
-        return self.score == 2500
-        
+        # Completion condition
+        return len(self.enemies.enemies) == 0
+
 
 class Level2:
     """
@@ -144,169 +250,320 @@ class Level2:
 
     Author: Sydwell and Theunis
     """
-    def __init__(self, width: int, height: int, stars: list):
-        self.score: int = 2500
+
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        stars: list,
+        multiplayer: bool,
+        players,
+        highscore: int,
+    ):
+        # Check if player is alive
         self.alive: bool = True
-        self.iteration_num: int = 0
-        self.player = Player(0, -0.85, 0.08, 0, 0, 90)
+
+        # Array of players to handle multi-player case
+        self.players = players
+
+        # Reset projectile state for all players carried over from previous level
+        for player in players:
+            player.projectile_shot = False
+            player.projectiles = []
+
+        # Keep track of player high score
+        self.highscore = highscore
+
+        # List of all enemy objects
         self.enemies = Enemies()
+
+        # Keep track of width and height for dynamic star size generation
         self.width = width
         self.height = height
+
+        # Multiplayer bool for setting multiplayer mode
+        self.multiplayer = multiplayer
+
+        # Set enemy speed
         self.enemy_speed = 0.001
+
+        # Bool for blocking enemy laser
         self.block = False
-        self.lives = 5
+
+        # Music handler
         self.music = Music()
-        self.music.load(["assets/Music/enemy_shoot", "assets/Music/shoot"])
+
+        # Preload level 2 music and enemy shoot sound effect
+        self.music.load(["assets/Music/enemy_shoot", "assets/Music/level2"])
+
+        # Play level 2 music in a continuous loop
+        self.music.play("assets/Music/level2", loop=True)
+
+        # Countdown before enemy fires laser (-1 means not active)
         self.shoot_countdown = -1
+
+        # List of enemies currently shooting
         self.enemies_shooting = []
+
+        # Set initial enemy direction (To the right)
         self.enemy_dir = 1
+
+        # Power up handler to manage power up spawning and collection
         self.power_up_handler = PowerUpHandler()
 
+        # Timer for shield power up duration
         self.shield_timer = 0
+
+        # Cooldown period for shield power up in seconds
         self.shield_cooldown = 10
 
+        # Variable for handling self.end_page
         self.end_page = None
 
+        # Bool for tracking if a projectile has been shot
         self.projectile_shot: bool = False
+
+        # Projectile direction components
         self.projectile_dx = 0
         self.projectile_dy = 0
 
+        # Create enemies (5 by 5)
         self.enemies.create_enemies(2, 5, 5)
-        self.cooldown_timer = time.time()
+
+        # Cooldown timers for each player to prevent rapid shooting
+        self.cooldown_timers = [time.time(), time.time()]
+
+        # Cooldown timer for block ability
         self.block_cooldown = time.time()
+
+        # Keep track of how long the player has been dead
         self.death_timer = 0
+
+        # Bool for tracking if an enemy has been hit
         self.hit = False
 
+        # Reuse star co-ordinates from previous level for visual continuity
         self.stars = stars
 
     def draw(self) -> None:
+        # Clear the canvas
         stddraw.clear()
+
+        # Draw a black background
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0, 1, 1)
 
-        stddraw.setPenColor(stddraw.WHITE)
-        stddraw.text(0.3, 0.9, f"Score: {self.score}")
-        stddraw.text(0.6, 0.9, f"Lives: {self.lives}")
-
+        # Draw all the stars
         for x, y, radius, colour in self.stars:
             probability = random.random()
+
+            # Using probability to create a flickering effect for the stars
             if probability < 0.99:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        if not self.enemies.check_death() and self.lives > 0:
-            self.player.draw_spaceship(0.1, stddraw.WHITE, False)
+        # Check if the player has died and continue with game if not
+        if not self.enemies.check_death() and self.alive:
+            # Smaller pen radius for line to determine where the enemies hit the player will die
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
+
+            # Create a dotted line where if the enemy hits this line the player dies
             for i in range(100):
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
-            self.enemy_dir = self.enemies.enemy_update(self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False)
+            # Handle enemy movement
+            self.enemy_dir = self.enemies.enemy_update(
+                self.enemy_dir, self.enemy_speed, self.enemy_speed * 12, False
+            )
+
+            # Draw enemies
             self.enemies.draw_enemies()
+
+            # Update and draw all active power ups
             self.power_up_handler.update()
             self.power_up_handler.draw()
 
             # enemy shooting logic
-            if random.randint(0, 120) == 1 and self.shoot_countdown < 0 and len(self.enemies.enemies) > 0:
+            # Randomly trigger enemy shoot sequence if no shoot is already in progress
+            if (
+                random.randint(0, 120) == 1
+                and self.shoot_countdown < 0
+                and len(self.enemies.enemies) > 0
+            ):
+                # Reset shoot countdown
                 self.shoot_countdown = 60
-                self.hit = False
 
+                # Reset hit state for all players
+                for player in self.players:
+                    player.hit = False
+
+                # Select a random enemy to shoot
                 random_enemy = self.enemies.shoot()
-                if random_enemy is not None and random_enemy not in self.enemies_shooting:
+
+                # Add enemy to shooting list if not already in it
+                if (
+                    random_enemy is not None
+                    and random_enemy not in self.enemies_shooting
+                ):
                     self.enemies_shooting.append(random_enemy)
 
+            # Decrement the shoot countdown each frame
             self.shoot_countdown -= 1
+
+            # Play enemy shoot sound effect at the correct moment in the countdown
             if self.shoot_countdown == 20:
                 self.music.play("assets/Music/enemy_shoot")
 
+            # List of lasers to skip drawing
+            lasers_to_not_draw: list = []
 
-            # player shooting
-            if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.8:
-                self.cooldown_timer = time.time()
-                self.player.shoot(0.008)
-                self.projectile_shot = False
+            # Remove enemies from shooting list that have been destroyed
+            self.enemies_shooting = [
+                enemy
+                for enemy in self.enemies_shooting
+                if enemy in self.enemies.enemies
+            ]
 
-            # check hits every frame
-            for projectile in self.player.projectiles[:]:
-                power_up = self.power_up_handler.check_hit(projectile)
-                if self.enemies.check_hit(projectile):
-                    self.score += 100
-                    self.enemy_speed += 0.00008
-                    self.player.projectiles.remove(projectile)
-                    break
-                elif power_up != -1:
-                    if power_up == 1:
+            # Go through each player object
+            for i, player in enumerate(self.players):
+                # Different colors for each player
+                if i % 2 == 0:
+                    player.draw_spaceship(0.1, stddraw.WHITE)
+                else:
+                    player.draw_spaceship(0.1, stddraw.LIGHT_GRAY)
 
-                        self.shield_timer = time.time()
-                    elif power_up == 2:
-                        self.score += 500
-                    elif power_up == 3:
-                        self.lives += 1
+                # Update projectile co-ordinates
+                player.move_projectiles()
 
-            self.enemies_shooting = [enemy for enemy in self.enemies_shooting if enemy in self.enemies.enemies]
+                # Draw all the projectiles
+                player.draw_projectiles()
+
+                # Check for player controls
+                player.control_player()
+
+                # Check if player shoots
+                if player.projectile_shot:
+                    player.shoot(0.008)
+
+                # Clean up projectiles that have left the screen
+                player.clean_up()
+
+                # check hits every frame
+                # List to keep track of projectiles to remove
+                projectile_to_remove = None
+                for projectile in player.projectiles[:]:
+                    # Check if a power up is hit by the projectile
+                    power_up = self.power_up_handler.check_hit(projectile)
+
+                    # Check if an enemy is hit, update score and make enemies faster
+                    if self.enemies.check_hit(projectile):
+                        player.score += 100
+                        self.enemy_speed += 0.00008
+                        projectile_to_remove = projectile
+                        break
+                    elif power_up != -1:
+                        # Apply the corresponding power up effect
+                        if power_up == 1:
+                            # Shield power up
+                            player.shield_timer = time.time()
+                        elif power_up == 2:
+                            # Bonus points power up
+                            player.score += 500
+                        elif power_up == 3:
+                            # Extra life power up
+                            player.lives += 1
+                        break
+
+                # Delete the projectile used to destroy an enemy or collect a power up
+                if projectile_to_remove is not None:
+                    player.projectiles.remove(projectile_to_remove)
+
+                # Draw shield if active
+                player.shield()
+
+                # Check if player has run out of lives
+                if player.lives <= 0:
+                    self.alive = False
+                    self.music.stop()
+                    self.death_timer = time.time()
+
+            # Draw laser warning beam during wind-up phase of the shoot countdown
             for enemy in self.enemies_shooting:
                 if 20 < self.shoot_countdown < 60:
                     for i in range(100):
                         stddraw.filledCircle(enemy.x, enemy.y - i / 100, 0.002)
 
-                if 0 < self.shoot_countdown <= 20:
+            # Stop music if level is completed
+            if self.check_completion():
+                self.music.stop()
+
+            # Draw the actual laser beam once countdown reaches firing phase
+            if 0 < self.shoot_countdown <= 20:
+                for enemy in self.enemies_shooting:
                     stddraw.setPenColor(stddraw.RED)
                     stddraw.setPenRadius(0.003)
-                    if time.time() - self.shield_timer > self.shield_cooldown:
+
+                    # Shorten laser if it hits a player, otherwise draw full length
+                    if not any(
+                        player.check_hit_laser(enemy) for player in self.players
+                    ):
                         stddraw.line(enemy.x, enemy.y, enemy.x, 0)
-                        if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
-                                self.player.x + 1) / 2 + self.player.radius:
-                            if not self.hit:
-                                self.lives -= 1
-                            self.hit = True
                     else:
-                        if (self.player.x + 1) / 2 - self.player.radius <= enemy.x <= (
-                                self.player.x + 1) / 2 + self.player.radius:
-                            stddraw.line(enemy.x, enemy.y, enemy.x, (self.player.y + 1)/2 + self.player.radius + 0.07)
-                        else:
-                            stddraw.line(enemy.x, enemy.y, enemy.x, 0)
-
-
-            if time.time() - self.shield_timer < self.shield_cooldown:
-                stddraw.setPenColor(stddraw.WHITE)
-                x = (self.player.x + 1)/2
-                y = (self.player.y + 1)/2
-                stddraw.filledRectangle(x - self.player.radius, y + self.player.radius + 0.07, self.player.radius * 2, 0.02)
-            self.player.move_projectiles()
-            self.player.draw_projectiles()
+                        stddraw.line(enemy.x, enemy.y, enemy.x, self.players[0].radius)
 
         else:
-            if self.alive:
-                self.death_timer = time.time()
+            # Create an end page if the player has died
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score, time.time())
+                self.end_page = EndPage(
+                    self.width, self.height, self.players, time.time(), self.highscore
+                )
+
+            # Draw the end page
             self.end_page.draw()
+
+            # Update that the player is dead
             self.alive = False
-        self._clean_up()
+
+        # Draw scores and lives of the players
+        stddraw.setPenColor(stddraw.BLACK)
+        stddraw.filledRectangle(0, 0.85, 1, 0.15)
+        stddraw.setPenColor(stddraw.ORANGE)
+        stddraw.setFontSize(20)
+        if not self.multiplayer:
+            stddraw.text(0.3, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.6, 0.9, f"Lives: {self.players[0].lives}")
+        else:
+            stddraw.text(0.225, 0.95, "PLAYER 1")
+            stddraw.text(0.125, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.4, 0.9, f"Lives: {self.players[0].lives}")
+            stddraw.text(0.8, 0.95, "PLAYER 2")
+            stddraw.text(0.65, 0.9, f"Score: {self.players[1].score}")
+            stddraw.text(0.9, 0.9, f"Lives: {self.players[1].lives}")
         stddraw.show(20)
 
-    def _clean_up(self):
-        copy_projectile: list = []
-        for projectile in self.player.projectiles:
-            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
-                copy_projectile.append(projectile)
-
-        self.player.projectiles = copy_projectile
-
     def run(self):
+        # Draw the level 2 page
         self.draw()
+
+        # Array of bools of all keys pressed to handle escape
         keys = stddraw.getKeysPressed()
-        self.projectile_shot = controls(self.player, keys)
-        self.block = keys[stddraw.K_b]
+
+        # Check if escape is pressed to stop the game
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
+
+        # Check if r is pressed in end game page to restart the game before 5 seconds are over
         if not self.alive and (keys[stddraw.K_r] or time.time() - self.death_timer > 5):
+            self.end_page.stop_music()
             return "RESTART"
 
+        # Default to continue game play state
         return "PLAY"
 
     def check_completion(self):
+        # Completion condition
         return len(self.enemies.enemies) == 0
 
 
@@ -327,174 +584,318 @@ class Level3:
 
     Author: Theunis, Ben and Sydwell
     """
-    def __init__(self, width: int, height: int, stars: list, score: int, lives: int):
-        self.score: int = score
+
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        stars: list,
+        players: list[Player],
+        highscore: int,
+    ):
+        # Check if player is alive
         self.alive: bool = True
-        self.player = Player(0, -0.85, 0.2, 0, 0, 90)
+
+        # Array of players to handle multi-player case
+        self.players = players
+
+        # Reset projectile state for all players carried over from previous level
+        for player in players:
+            player.projectile_shot = False
+            player.projectiles = []
+
+        # Create the boss enemy at the top center of the screen
         self.boss = Boss(0.5, 0.75, 3, 0.08)
+
+        # Keep track of width and height for dynamic star size generation
         self.width = width
         self.height = height
-        self.lives = lives
+
+        # Set initial enemy direction (To the right)
         self.enemy_dir = 1
+
+        # Power up handler to manage power up spawning and collection
         self.power_up_handler = PowerUpHandler()
 
+        # Music handler
+        self.music = Music()
+
+        # Keep track of player high score
+        self.highscore = highscore
+
+        # Multiplayer bool derived from number of players
+        self.multiplayer = len(players) > 1
+
+        # Preload boss music
+        self.music.load(["assets/Music/boss_music"])
+
+        # Play boss music in a continuous loop
+        self.music.play("assets/Music/boss_music", loop=True)
+
+        # Timer for shield power up duration
         self.shield_timer = 0
+
+        # Cooldown period for shield power up in seconds
         self.shield_cooldown = 10
 
+        # Timer for awarding bonus score over time
         self.score_timer = time.time()
 
-        self.projectile_shot: bool = False
-        self.cooldown_timer = time.time()
-        self.death_timer = 0
+        # Keep track of how long the player has been dead
+        self.death_timer = None
+
+        # Timer for tracking when the victory screen should appear
+        self.victory_timer = None
+
+        # Bool for tracking if an enemy has been hit
         self.hit = False
 
+        # Variable for handling self.end_page
         self.end_page = None
+
+        # Reuse star co-ordinates from previous level for visual continuity
         self.stars = stars
+
+        # Bool to ensure score bonus is only awarded once
         self.score_bonus = False
 
     def check_distance(self, projectile1: Projectile, projectile2: Projectile) -> bool:
-        distance = math.hypot(projectile1.x - projectile2.x, projectile1.y - projectile2.y)
+        # Calculate euclidean distance between two projectiles
+        distance = math.hypot(
+            projectile1.x - projectile2.x, projectile1.y - projectile2.y
+        )
 
+        # Return true if projectiles are close enough to be considered a collision
         return distance < 0.03
 
     def draw(self) -> None:
+        # Clear the canvas
         stddraw.clear()
+
+        # Draw a black background
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0, 0, 1, 1)
 
-        stddraw.setPenColor(stddraw.WHITE)
-        stddraw.text(0.3, 0.9, f"Score: {self.score}")
-        stddraw.text(0.6, 0.9, f"Lives: {self.lives}")
-
+        # Draw all the stars
         for x, y, radius, colour in self.stars:
             probability = random.random()
+
+            # Using probability to create a flickering effect for the stars
             if probability < 0.99:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
-        if not self.check_completion() and self.lives > 0:
-            self.player.draw_spaceship(0.1, stddraw.WHITE, False)
+        # Check if the boss is alive and the player has not died
+        if not self.check_completion() and self.alive:
+            # Smaller pen radius for line to determine where the enemies hit the player will die
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
+
+            # Create a dotted line where if the enemy hits this line the player dies
             for i in range(100):
                 x = i / 100
                 stddraw.filledCircle(x, 0.205, 0.002)
 
+            # Go through each player object
+            for i, player in enumerate(self.players):
+                # Different colors for each player
+                if i % 2 == 0:
+                    player.draw_spaceship(0.1, stddraw.WHITE)
+                else:
+                    player.draw_spaceship(0.1, stddraw.LIGHT_GRAY)
+
+                # Update projectile co-ordinates
+                player.move_projectiles()
+
+                # Draw all the projectiles
+                player.draw_projectiles()
+
+                # Check for player controls
+                player.control_player()
+
+                # Check if player has run out of lives
+                if player.lives <= 0:
+                    self.alive = False
+                    self.music.stop()
+                    self.death_timer = time.time()
+
+                # Check if player shoots
+                if player.projectile_shot:
+                    player.shoot(0.008)
+
+                # Draw shield if active
+                player.shield()
+
+                # List to keep track of projectiles to remove
+                projectile_to_remove = None
+
+                for projectile in player.projectiles[:]:
+                    # Check if a power up is hit by the projectile
+                    power_up = self.power_up_handler.check_hit(projectile)
+
+                    # Check if the boss is hit, reduce boss health and update score
+                    if self.boss.is_hit_by_projectile(projectile):
+                        self.boss.health -= 5
+                        player.score += 100
+                        projectile_to_remove = projectile
+                        break
+                    elif power_up != -1:
+                        # Apply the corresponding power up effect
+                        if power_up == 1:
+                            # Shield power up
+                            player.shield_timer = time.time()
+                        elif power_up == 2:
+                            # Bonus points power up
+                            player.score += 500
+                        elif power_up == 3:
+                            # Extra life power up
+                            player.lives += 1
+                        break
+
+                # Delete the projectile used to hit the boss or collect a power up
+                if projectile_to_remove is not None:
+                    player.projectiles.remove(projectile_to_remove)
+
+                # check if player projectiles hit enemy projectiles
+                # Lists of projectiles to remove from both sides after collision
+                to_remove_player: list = []
+                to_remove_boss: list = []
+
+                # Check all combinations of player and boss projectiles for collisions
+                for player_projectile in player.projectiles:
+                    for enemy_projectile in self.boss.projectiles:
+                        if self.check_distance(player_projectile, enemy_projectile):
+                            to_remove_player.append(player_projectile)
+                            to_remove_boss.append(enemy_projectile)
+
+                # Remove collided projectiles from both player and boss projectile lists
+                player.projectiles = [
+                    projectile
+                    for projectile in player.projectiles
+                    if projectile not in to_remove_player
+                ]
+                self.boss.projectiles = [
+                    projectile
+                    for projectile in self.boss.projectiles
+                    if projectile not in to_remove_boss
+                ]
+
+                # check boss projectiles hit player
+                # Remove boss projectiles that have hit the player
+                self.boss.projectiles = player.check_hit_projectile(
+                    self.boss.projectiles
+                )
+
+                # Clean up projectiles that have left the screen
+                player.clean_up()
+
             # boss movement and drawing
+            # Handle boss movement
             self.enemy_dir = self.boss.move(self.enemy_dir, 0.002, 0.001, False)
+
+            # Handle boss shooting
             self.boss.shoot()
+
+            # Draw the boss
             self.boss.draw()
 
             # powerups
+            # Update and draw all active power ups
             self.power_up_handler.update()
             self.power_up_handler.draw()
 
-            # player shooting
-            if self.projectile_shot and (time.time() - self.cooldown_timer) > 0.8:
-                self.cooldown_timer = time.time()
-                self.player.shoot(0.008)
-                self.projectile_shot = False
-
-            # check player projectile hits boss
-            for projectile in self.player.projectiles[:]:
-                power_up = self.power_up_handler.check_hit(projectile)
-                if self.boss.is_hit_by_projectile(projectile):
-                    self.boss.health -= 5
-                    self.score += 100
-                    self.player.projectiles.remove(projectile)
-                    break
-                elif power_up != -1:
-                    if power_up == 1:
-                        self.shield_timer = time.time()
-                    elif power_up == 2:
-                        self.score += 500
-                    elif power_up == 3:
-                        self.lives += 1
-
-            #check if player projectiles hit enemy projectiles
-
-            to_remove_player: list = []
-            to_remove_boss: list = []
-            for player_projectile in self.player.projectiles:
-                for enemy_projectile in self.boss.projectiles:
-                    if self.check_distance(player_projectile, enemy_projectile):
-                        to_remove_player.append(player_projectile)
-                        to_remove_boss.append(enemy_projectile)
-
-            self.player.projectiles = [projectile for projectile in self.player.projectiles if projectile not in to_remove_player]
-            self.boss.projectiles = [projectile for projectile in self.boss.projectiles if
-                                       projectile not in to_remove_boss]
-            # check boss projectiles hit player
-            for projectile in self.boss.projectiles:
-                player_x = (self.player.x + 1) / 2
-                player_y = (self.player.y + 1) / 2
-                if math.hypot(projectile.x - player_x, projectile.y - player_y) < self.player.radius * 0.7:
-                    if time.time() - self.shield_timer < self.shield_cooldown:
-                        self.shield_timer = 0
-                    else:
-                        self.lives -= 1
-                    self.boss.projectiles.remove(projectile)
-                    break
-
-            # draw shield
-            if time.time() - self.shield_timer < self.shield_cooldown:
-                stddraw.setPenColor(stddraw.WHITE)
-                x = (self.player.x + 1) / 2
-                y = (self.player.y + 1) / 2
-                stddraw.filledRectangle(x - self.player.radius, y + self.player.radius + 0.07, self.player.radius * 2, 0.02)
-
-            self.player.move_projectiles()
-            self.player.draw_projectiles()
-
-        elif self.lives <= 0:
-            if self.alive:
-                self.death_timer = time.time()
+        # Player has died but boss is still alive - show end page
+        elif not self.alive and self.boss.health > 0:
             if self.end_page is None:
-                self.end_page = EndPage(self.width, self.height, self.score, time.time())
+                self.end_page = EndPage(
+                    self.width, self.height, self.players, time.time(), self.highscore
+                )
             self.end_page.draw()
-            self.alive = False
+
+        # Boss has been defeated - show victory screen
         elif self.boss.health <= 0:
+            # Stop music to prevent audio clashes
+            self.music.stop()
+
+            # Record the time of victory for countdown timer
+            if self.alive:
+                self.victory_timer = time.time()
+
+            # Award one-time score bonus for defeating the boss
             if not self.score_bonus:
                 self.score_bonus = True
-                self.score += 2000
+                for player in self.players:
+                    player.score += 2000
+
+            # Create victory page if it does not exist yet
             if self.end_page is None:
-                self.end_page = Victory(self.width, self.height, self.score, time.time())
+                self.end_page = Victory(
+                    self.width, self.height, self.players, time.time(), self.highscore
+                )
+
+            # Draw the victory page
             self.end_page.draw()
+
+            # Update that the player is dead
             self.alive = False
 
-        if time.time() - self.score_timer > 10:
-            self.score_timer = time.time()
-            self.score += 100
+        # Draw scores and lives of the players
+        if not self.multiplayer:
+            stddraw.text(0.3, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.6, 0.9, f"Lives: {self.players[0].lives}")
+        else:
+            stddraw.text(0.125, 0.9, f"Score: {self.players[0].score}")
+            stddraw.text(0.4, 0.9, f"Lives: {self.players[0].lives}")
+            stddraw.text(0.65, 0.9, f"Score: {self.players[1].score}")
+            stddraw.text(0.9, 0.9, f"Lives: {self.players[1].lives}")
         stddraw.show(20)
+
+        # Clean up boss projectiles that have left the screen
         self._clean_up()
 
     def _clean_up(self):
-        copy_projectile_player: list = []
-        for projectile in self.player.projectiles:
-            if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
-                copy_projectile_player.append(projectile)
-
-        self.player.projectiles = copy_projectile_player
-
+        # List to store only in-bounds boss projectiles
         copy_projectile_boss: list = []
+
+        # Keep only projectiles that are still within the screen bounds
         for projectile in self.boss.projectiles:
             if 0 <= projectile.x <= 1 and 0 <= projectile.y <= 1:
                 copy_projectile_boss.append(projectile)
 
+        # Replace boss projectile list with the filtered list
         self.boss.projectiles = copy_projectile_boss
 
     def run(self):
+        # Draw the level 3 page
         self.draw()
+
+        # Array of bools of all keys pressed to handle escape
         keys = stddraw.getKeysPressed()
-        self.projectile_shot = controls(self.player, keys)
+
+        # Check if escape is pressed to stop the game
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
+<<<<<<< HEAD
         if not self.alive:
             if keys[stddraw.K_r]:
                 return "RESTART"
             if keys[stddraw.K_ESCAPE]:
                 return "ESCAPE"
+=======
+
+        # Check if r is pressed or timers have expired to restart the game
+        if not self.alive and (
+            keys[stddraw.K_r]
+            or (not self.check_completion() and time.time() - self.death_timer > 5)
+            or (self.check_completion() and time.time() - self.victory_timer > 15)
+        ):
+            self.end_page.stop_music()
+            return "RESTART"
+
+        # Default to continue game play state
+>>>>>>> 3ea7524db4d0ec1aebbf67cf0c06c26b53286687
         return "PLAY"
 
     def check_completion(self) -> bool:
+        # Completion condition
         return self.boss.health <= 0
