@@ -26,7 +26,6 @@ class Level1:
     def __init__(self, width: int, height: int, multiplayer: bool, highscore: int):
         self.score: int = 0
         self.alive: bool = True
-        self.iteration_num: int = 0
         self.players = []
         self.highscore = highscore
         self.multiplayer: bool = multiplayer
