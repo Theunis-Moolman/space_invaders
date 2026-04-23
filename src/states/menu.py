@@ -16,6 +16,7 @@ class MenuPageSingle:
 
     Author: Sydwell and Theunis
     """
+
     def __init__(self, width: int, height: int, highscore: int):
         self.finished = False
         self.timer = time.time()
@@ -45,7 +46,7 @@ class MenuPageSingle:
             "PRESS SPACE TO PLAY!",
             "",
             "PRESS ESCAPE TO EXIT",
-            "PRESS M TO ENABLE MULTIPLAYER"
+            "PRESS M TO ENABLE MULTIPLAYER",
         ]
 
     def draw(self):
@@ -62,7 +63,7 @@ class MenuPageSingle:
         stddraw.filledRectangle(0, 0.8, 1, 0.5)
         stddraw.setPenRadius(0.1)
         stddraw.setPenColor(stddraw.WHITE)
-        stddraw.rectangle(0.09, 0.19, 0.82, 0.52 )
+        stddraw.rectangle(0.09, 0.19, 0.82, 0.52)
         stddraw.setPenColor(stddraw.BLACK)
         stddraw.filledRectangle(0.1, 0.2, 0.8, 0.5)
         stddraw.setPenColor(stddraw.WHITE)
@@ -80,7 +81,6 @@ class MenuPageSingle:
 
         stddraw.show(20)
 
-
     def run(self):
         self.draw()
         if stddraw.hasNextKeyTyped():
@@ -93,6 +93,7 @@ class MenuPageSingle:
                 return "MULTI"
         return "MENU"
 
+
 class MenuPageMulti(MenuPageSingle):
     def __init__(self, width: int, height: int, highscore: int):
         super().__init__(width, height, highscore)
@@ -103,7 +104,7 @@ class MenuPageMulti(MenuPageSingle):
             "PRESS SPACE TO PLAY!",
             "",
             "PRESS ESCAPE TO EXIT",
-            "PRESS S TO ENABLE SINGLEPLAYER"
+            "PRESS S TO ENABLE SINGLEPLAYER",
         ]
         self.fontsize = min(self.width, self.height) // 40
 

@@ -19,7 +19,10 @@ class EndPage:
 
     Author: Theunis
     """
-    def __init__(self, width: int, height: int, players, death_timer: float, highscore: int):
+
+    def __init__(
+        self, width: int, height: int, players, death_timer: float, highscore: int
+    ):
         self.stars = []
         self.players = players
         self.death_timer = death_timer
@@ -39,7 +42,7 @@ class EndPage:
         for player in self.players:
             if player.score > highscore:
                 highscore = player.score
-                with open('src/Stored/Highscore.txt', 'w') as f:
+                with open("src/Stored/Highscore.txt", "w") as f:
                     f.write(str(highscore))
 
     def draw(self):
@@ -61,9 +64,13 @@ class EndPage:
         stddraw.setPenColor(stddraw.WHITE)
         if len(self.players) > 1:
             if self.players[0].score > self.players[1].score:
-                stddraw.text(0.5, 0.5, f"Player 1 won with score: {self.players[0].score}")
+                stddraw.text(
+                    0.5, 0.5, f"Player 1 won with score: {self.players[0].score}"
+                )
             elif self.players[1].score > self.players[0].score:
-                stddraw.text(0.5, 0.5, f"Player 2 won with score: {self.players[1].score}")
+                stddraw.text(
+                    0.5, 0.5, f"Player 2 won with score: {self.players[1].score}"
+                )
             else:
                 stddraw.text(0.5, 0.5, f"Draw: {self.players[0].score}")
         else:
@@ -71,7 +78,11 @@ class EndPage:
         stddraw.setFontSize(25)
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
-        stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(5 - time.time() + self.death_timer)} SECONDS")
+        stddraw.text(
+            0.5,
+            0.1,
+            f"AUTO RESTARTING IN {int(5 - time.time() + self.death_timer)} SECONDS",
+        )
 
     def stop_music(self):
         self.music.stop()

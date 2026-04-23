@@ -23,7 +23,7 @@ def main() -> None:
     stddraw.setCanvasSize(width, height)
     state = "MENU"
 
-    with open('src/Stored/Highscore.txt', 'r') as f:
+    with open("src/Stored/Highscore.txt", "r") as f:
         line = f.read().strip()
     if line == "":
         highscore = 0
@@ -39,8 +39,8 @@ def main() -> None:
     level3_paragraph = "Final boss reached! \n Hope you saved up lives..."
 
     music = Music()
-    music.load(['assets/Music/Music'])
-    music.play('assets/Music/Music', loop = True)
+    music.load(["assets/Music/Music"])
+    music.play("assets/Music/Music", loop=True)
 
     while state != "ESCAPE":
         if state == "MENU":
@@ -65,18 +65,29 @@ def main() -> None:
                 transitioned = True
                 GamePage = Level1(width, height, multiplayer, highscore)
             else:
-                if GamePage.check_completion()  and isinstance(GamePage, Level1):
-                    Transition = TransitionPage("Level 2", level2_paragraph, GamePage.stars)
+                if GamePage.check_completion() and isinstance(GamePage, Level1):
+                    Transition = TransitionPage(
+                        "Level 2", level2_paragraph, GamePage.stars
+                    )
                     Transition.draw()
-                    GamePage = Level2(width, height, GamePage.stars, multiplayer, GamePage.players, highscore)
+                    GamePage = Level2(
+                        width,
+                        height,
+                        GamePage.stars,
+                        multiplayer,
+                        GamePage.players,
+                        highscore,
+                    )
                 elif GamePage.check_completion() and isinstance(GamePage, Level2):
-                    Transition = TransitionPage("Level 3", level3_paragraph, GamePage.stars)
+                    Transition = TransitionPage(
+                        "Level 3", level3_paragraph, GamePage.stars
+                    )
                     Transition.draw()
-                    GamePage = Level3(width, height, GamePage.stars, GamePage.players, highscore)
+                    GamePage = Level3(
+                        width, height, GamePage.stars, GamePage.players, highscore
+                    )
 
                 state = GamePage.run()
-
-
 
         elif state == "RESTART":
             transitioned = False

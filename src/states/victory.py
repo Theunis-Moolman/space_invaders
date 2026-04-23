@@ -2,12 +2,16 @@ import stddraw
 import time
 from src.Music.music import Music
 
+
 class Victory:
     """
     Victory screen that shows a congratulatory message and final score
     Author Ben
     """
-    def __init__(self, width: int, height: int, players, win_timer: float, highscore: int):
+
+    def __init__(
+        self, width: int, height: int, players, win_timer: float, highscore: int
+    ):
         self.width = width
         self.players = players
         self.win_timer = win_timer
@@ -19,9 +23,8 @@ class Victory:
         for player in self.players:
             if player.score > highscore:
                 highscore = player.score
-                with open('src/Stored/Highscore.txt', 'w') as f:
+                with open("src/Stored/Highscore.txt", "w") as f:
                     f.write(str(highscore))
-
 
     def draw(self):
         stddraw.clear()
@@ -39,9 +42,13 @@ class Victory:
         # Score
         if len(self.players) > 1:
             if self.players[0].score > self.players[1].score:
-                stddraw.text(0.5, 0.5, f"Player 1 won with score: {self.players[0].score}")
+                stddraw.text(
+                    0.5, 0.5, f"Player 1 won with score: {self.players[0].score}"
+                )
             elif self.players[1].score > self.players[0].score:
-                stddraw.text(0.5, 0.5, f"Player 2 won with score: {self.players[1].score}")
+                stddraw.text(
+                    0.5, 0.5, f"Player 2 won with score: {self.players[1].score}"
+                )
             else:
                 stddraw.text(0.5, 0.5, f"Draw: {self.players[0].score}")
         else:
@@ -52,10 +59,11 @@ class Victory:
         stddraw.text(0.5, 0.3, "PRESS R TO RESTART")
         stddraw.text(0.5, 0.2, "PRESS ESC TO EXIT")
 
-        stddraw.text(0.5, 0.1, f"AUTO RESTARTING IN {int(15 - time.time() + self.win_timer)} SECONDS")
+        stddraw.text(
+            0.5,
+            0.1,
+            f"AUTO RESTARTING IN {int(15 - time.time() + self.win_timer)} SECONDS",
+        )
 
     def stop_music(self):
         self.music_handler.stop()
-
-
-        
