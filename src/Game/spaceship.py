@@ -4,6 +4,7 @@ from src.Music.music import Music
 from picture import Picture
 from color import Color
 import time
+import random
 
 
 class Projectile:
@@ -175,12 +176,31 @@ class Player:
             self.projectile_shot = False
             self.shooting_cooldown = time.time()
 
+    def _draw_shield(self, x, y, radius, pen_radius) -> None:
+        stddraw.setPenColor(stddraw.CYAN)
+        points  = []
+        for i in range(6):
+            angle = math.radians(60 * i + time.time() * 60)
+            px = x + radius * math.cos(angle)
+            py = y + radius * math.sin(angle)
+            points.append((px, py))
+
+        stddraw.setPenRadius(pen_radius)
+        for i in range(6):
+            x1, y1 = points[i - 1]
+            x2, y2 = points[i]
+            stddraw.line(x1, y1, x2, y2)
+
+        stddraw.setPenColor(stddraw.RED)
+
     def shield(self):
         if time.time() - self.shield_timer < self.shield_cooldown:
             stddraw.setPenColor(stddraw.WHITE)
             x = (self.x + 1) / 2
             y = (self.y + 1) / 2
-            stddraw.filledRectangle(x - self.radius, y + self.radius + 0.07, self.radius * 2, 0.02)
+            if random.random() < 0.9:
+                self._draw_shield(x, y, self.radius * 0.8, 0.005)
+                self._draw_shield(x, y, self.radius * 0.9, 0.002)
 
     def draw_projectiles(self) -> None:
         for projectile in self.projectiles:
@@ -192,22 +212,20 @@ class Player:
             projectile.move()
 
     def check_hit_laser(self, enemy):
-        if time.time() - self.shield_timer > self.shield_cooldown and not self.hit:
-            self.hit = True
-            if (self.x + 1) / 2 - self.radius <= enemy.x <= (
-                    self.x + 1) / 2 + self.radius:
+        if (self.x + 1) / 2 - self.radius * 0.65 <= enemy.x <= (self.x + 1) / 2 + self.radius * 0.65:
+            if time.time() - self.shield_timer > self.shield_cooldown and not self.hit:
+                self.hit = True
                 self.lives -= 1
-                return True
+            return True
         return False
 
     def check_hit_projectile(self, projectiles):
         projectiles_to_remove = []
-        if time.time() - self.shield_timer > self.shield_cooldown:
-
-            for projectile in projectiles[:]:
-                if math.hypot((self.x + 1)/2 - projectile.x, (self.y + 1)/2 - projectile.y) < self.radius * 0.7:
+        for projectile in projectiles[:]:
+            if math.hypot((self.x + 1)/2 - projectile.x, (self.y + 1)/2 - projectile.y) < self.radius * 0.7:
+                if time.time() - self.shield_timer > self.shield_cooldown:
                     self.lives -= 1
-                    projectiles_to_remove.append(projectile)
+                projectiles_to_remove.append(projectile)
         return [projectile for projectile in projectiles if projectile not in projectiles_to_remove]
 
 

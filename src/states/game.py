@@ -175,6 +175,11 @@ class Level2:
         self.alive: bool = True
         self.iteration_num: int = 0
         self.players = players
+
+        for player in players:
+            player.projectile_shot = False
+            player.projectiles = []
+
         self.highscore = highscore
         self.enemies = Enemies()
         self.width = width
@@ -218,6 +223,7 @@ class Level2:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
 
+
         if not self.enemies.check_death() and self.alive:
             stddraw.setPenRadius(0.001)
             stddraw.setPenColor(stddraw.WHITE)
@@ -244,6 +250,7 @@ class Level2:
             if self.shoot_countdown == 20:
                 self.music.play("assets/Music/enemy_shoot")
 
+            lasers_to_not_draw: list = []
             self.enemies_shooting = [enemy for enemy in self.enemies_shooting if enemy in self.enemies.enemies]
             for i, player in enumerate(self.players):
                 if i % 2 == 0:
@@ -280,15 +287,6 @@ class Level2:
                 if projectile_to_remove is not None:
                     player.projectiles.remove(projectile_to_remove)
                 player.shield()
-                if 0 < self.shoot_countdown <= 20:
-                    for enemy in self.enemies_shooting:
-                            stddraw.setPenColor(stddraw.RED)
-                            stddraw.setPenRadius(0.003)
-                            stddraw.line(enemy.x, enemy.y, enemy.x, 0)
-                            if player.check_hit_laser(enemy):
-                                stddraw.line(enemy.x, enemy.y, enemy.x, (player.y + 1)/2 + player.radius + 0.07)
-                            else:
-                                stddraw.line(enemy.x, enemy.y, enemy.x, 0)
                 if player.lives <= 0:
                     self.alive = False
                     self.music.stop()
@@ -299,6 +297,14 @@ class Level2:
                         stddraw.filledCircle(enemy.x, enemy.y - i / 100, 0.002)
             if self.check_completion():
                 self.music.stop()
+            if 0 < self.shoot_countdown <= 20:
+                for enemy in self.enemies_shooting:
+                    stddraw.setPenColor(stddraw.RED)
+                    stddraw.setPenRadius(0.003)
+                    if not any(player.check_hit_laser(enemy) for player in self.players):
+                        stddraw.line(enemy.x, enemy.y, enemy.x, 0)
+                    else:
+                        stddraw.line(enemy.x, enemy.y, enemy.x, self.players[0].radius)
 
         else:
             if self.end_page is None:
@@ -357,6 +363,10 @@ class Level3:
     def __init__(self, width: int, height: int, stars: list, players: list[Player], highscore: int):
         self.alive: bool = True
         self.players = players
+        for player in players:
+            player.projectile_shot = False
+            player.projectiles = []
+
         self.boss = Boss(0.5, 0.75, 3, 0.08)
         self.width = width
         self.height = height
@@ -374,8 +384,6 @@ class Level3:
 
         self.score_timer = time.time()
 
-        self.projectile_shot: bool = False
-        self.cooldown_timer = time.time()
         self.death_timer = None
         self.victory_timer = None
         self.hit = False
@@ -426,6 +434,7 @@ class Level3:
                 if player.projectile_shot:
                     player.shoot(0.008)
 
+                player.shield()
 
                 projectile_to_remove = None
 
