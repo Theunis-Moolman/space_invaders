@@ -414,7 +414,7 @@ class Level2:
 
             # Play enemy shoot sound effect at the correct moment in the countdown
             if self.shoot_countdown == 20:
-                self.music.play("assets/Music/enemy_shoot")
+                self.music.play("assets/Music/enemy_shoot", sfx=True)
 
             # List of lasers to skip drawing
             lasers_to_not_draw: list = []

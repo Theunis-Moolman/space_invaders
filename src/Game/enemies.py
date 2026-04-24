@@ -102,7 +102,7 @@ class Boss(Enemy):
         # Make enemy shoot if random cooldown is complete
         if time.time() - self.cooldown > random.randint(3, 20):
             # Play Tchaikovsky Cannon sound effect
-            self.music.play("assets/Music/boss_cannon")
+            self.music.play("assets/Music/boss_cannon", sfx=True)
 
             # Shoot projectiles at different angles
             angles = [-45, -22.5, 0, 22.5, 45]
