@@ -65,6 +65,7 @@ class EndPage:
     # --- STAR RENDERING (TWINKLE EFFECT) ---
         # Draws stars with a slight randomness so they appear to flicker     probability = random.random()
         for x, y, radius, colour in self.stars:
+            probabilily = random.random()
             if probability < 0.99:
                 stddraw.setPenColor(colour)
                 stddraw.filledCircle(x, y, radius)
