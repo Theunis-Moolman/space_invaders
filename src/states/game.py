@@ -582,7 +582,7 @@ class Level3:
         score: score carried over from previous level
         lives: lives carried over from previous level
 
-    Author: Theunis and Sydwell
+    Author: Theunis, Ben and Sydwell
     """
 
     def __init__(
@@ -875,6 +875,13 @@ class Level3:
         # Check if escape is pressed to stop the game
         if keys[stddraw.K_ESCAPE]:
             return "ESCAPE"
+<<<<<<< HEAD
+        if not self.alive:
+            if keys[stddraw.K_r]:
+                return "RESTART"
+            if keys[stddraw.K_ESCAPE]:
+                return "ESCAPE"
+=======
 
         # Check if r is pressed or timers have expired to restart the game
         if not self.alive and (
@@ -886,6 +893,7 @@ class Level3:
             return "RESTART"
 
         # Default to continue game play state
+>>>>>>> 3ea7524db4d0ec1aebbf67cf0c06c26b53286687
         return "PLAY"
 
     def check_completion(self) -> bool:
